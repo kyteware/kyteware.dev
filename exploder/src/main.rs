@@ -71,14 +71,23 @@ fn setup_scene(
     //     RigidBody::Static,
     //     Collider::cuboid(100., 100., 0.1)
     // ));
-    for i in 0..200 {
+    for i in 0..10 {
         commands.spawn((
-            Mesh3d(mesh_assets.add(Sphere::new(0.4))),
+            Mesh3d(mesh_assets.add(Sphere::new(0.2))),
             MeshMaterial3d(material_assets.add(Color::srgb_u8(124, 144, 255))),
             // Transform::from_xyz(0.0, 3., 1.0).rotate_local_x(0.2)
-            Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(2., 8. + (2*i) as f32, 0.)),
+            Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(0.5, 3. + (0.41* i as f32), 0.)),
             RigidBody::Dynamic,
-            Collider::sphere(0.4)
+            Collider::sphere(0.2)
+        ));
+
+        commands.spawn((
+            Mesh3d(mesh_assets.add(Sphere::new(0.2))),
+            MeshMaterial3d(material_assets.add(Color::srgb_u8(255, 144, 100))),
+            // Transform::from_xyz(0.0, 3., 1.0).rotate_local_x(0.2)
+            Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(-0.5, 3. + (0.41* i as f32), 0.)),
+            RigidBody::Dynamic,
+            Collider::sphere(0.2)
         ));
     }
 
@@ -92,7 +101,7 @@ fn checkout_cone(mut commands: Commands, query: Query<(Entity, &Mesh3d, &Name)>,
         return;
     }
     for (entity, mesh, name) in &query {
-        if name.as_str() == "Cone" {
+        if name.as_str().starts_with("inner-box-mesh") {
             let Some(mesh) = mesh_assets.get(&mesh.0) else {
                 return;
             };
