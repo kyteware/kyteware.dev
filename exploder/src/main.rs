@@ -3,6 +3,7 @@ use avian3d::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 
 const DISTANCE_AWAY: f32 = 10.;
+const BALL_RAD: f32 = 0.23;
 
 fn main() {
     App::new()
@@ -12,7 +13,7 @@ fn main() {
         .add_plugins(PhysicsPlugins::default())
         .init_resource::<Game>()
         .add_systems(Startup, (setup_camera, setup_lights, setup_scene))
-        .add_systems(Update, (checkout_cone,)) // during update because we wait for gltf to finish loading
+        .add_systems(Update, (solidify_box, mark_ball_collider)) // during update because we wait for gltf to finish loading
         .run();
 }
 
@@ -64,30 +65,23 @@ fn setup_scene(
     let material_assets = material_assets.into_inner();
     let mesh_assets = mesh_assets.into_inner();
 
-    // commands.spawn((
-    //     Mesh3d(mesh_assets.add(Circle::new(4.0))),
-    //     MeshMaterial3d(material_assets.add(Color::WHITE)),
-    //     Transform::from_rotation(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2)),
-    //     RigidBody::Static,
-    //     Collider::cuboid(100., 100., 0.1)
-    // ));
-    for i in 0..10 {
+    for i in 0..3 {
         commands.spawn((
-            Mesh3d(mesh_assets.add(Sphere::new(0.2))),
+            Mesh3d(mesh_assets.add(Sphere::new(BALL_RAD))),
             MeshMaterial3d(material_assets.add(Color::srgb_u8(124, 144, 255))),
             // Transform::from_xyz(0.0, 3., 1.0).rotate_local_x(0.2)
             Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(0.5, 3. + (0.41* i as f32), 0.)),
             RigidBody::Dynamic,
-            Collider::sphere(0.2)
+            Collider::sphere(BALL_RAD)
         ));
 
         commands.spawn((
-            Mesh3d(mesh_assets.add(Sphere::new(0.2))),
+            Mesh3d(mesh_assets.add(Sphere::new(BALL_RAD))),
             MeshMaterial3d(material_assets.add(Color::srgb_u8(255, 144, 100))),
             // Transform::from_xyz(0.0, 3., 1.0).rotate_local_x(0.2)
             Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(-0.5, 3. + (0.41* i as f32), 0.)),
             RigidBody::Dynamic,
-            Collider::sphere(0.2)
+            Collider::sphere(BALL_RAD)
         ));
     }
 
@@ -96,7 +90,7 @@ fn setup_scene(
     );
 }
 
-fn checkout_cone(mut commands: Commands, query: Query<(Entity, &Mesh3d, &Name)>, mut done: Local<bool>, mesh_assets: Res<Assets<Mesh>>) {
+fn solidify_box(mut commands: Commands, query: Query<(Entity, &Mesh3d, &Name)>, mut done: Local<bool>, mesh_assets: Res<Assets<Mesh>>) {
     if *done {
         return;
     }
@@ -112,5 +106,20 @@ fn checkout_cone(mut commands: Commands, query: Query<(Entity, &Mesh3d, &Name)>,
             ));
             *done = true;
         }
+    }
+}
+
+#[derive(Component)]
+struct BallCollider;
+
+fn mark_ball_collider(mut commands: Commands, query: Query<(Entity, &Name)>, mut done: Local<bool>, mesh_assets: Res<Assets<Mesh>>) {
+    if *done {
+        return;
+    }
+    for (entity, name) in &query {
+        if name.as_str().starts_with("ball-collider") {
+            commands.entity(entity).insert(BallCollider);
+        }
+        *done = true;
     }
 }
