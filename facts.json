@@ -1,0 +1,43 @@
+{
+    "personal_projects": [
+        {
+            "name": "Javalanalyzer",
+            "description": "todo"
+        },
+        {
+            "name": "Faraway (Raytracer)",
+            "description": "todo"
+        },
+        {
+            "name": "AI Air Mouse",
+            "description": "todo"
+        },
+        {
+            "name": "Optimal Keyboard Layout",
+            "description": "todo"
+        },
+        {
+            "name": "UnderstandRAG",
+            "description": "todo"
+        }
+    ],
+    "experiences": [
+        {
+            "name": "BSc Computer Science, UBC",
+            "description": "todo",
+            "priority": "low"
+        }
+    ],
+    "events": [],
+    "tidbits": [
+        {
+            "name": "Skiing",
+            "description": "todo"
+        },
+        {
+            "name": "Guitar",
+            "description": "todo",
+            "priority": "low"
+        }
+    ]
+}
