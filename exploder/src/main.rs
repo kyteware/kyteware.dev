@@ -2,6 +2,7 @@ use std::sync::LazyLock;
 
 use bevy::{prelude::*, window::WindowResolution};
 use avian3d::prelude::*;
+use wasm_bindgen::prelude::*;
 use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
 
 const DISTANCE_AWAY: f32 = 10.;
@@ -161,5 +162,13 @@ fn remove_ball(mut commands: Commands, mut query: Query<(Entity, &mut Transform)
         lowest_translation.translation = Vec3::splat(DISTANCE_AWAY / 2.);
         commands.entity(lowest_entity).remove::<AvailableBall>();
     }
+
+    if test_extra(3.) == 4. {
+        test_extra(5.);
+    }
 }
 
+#[wasm_bindgen]
+extern "C" {
+    fn test_extra(value: f32) -> f32;
+}
