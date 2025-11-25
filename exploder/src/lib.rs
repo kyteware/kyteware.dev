@@ -1,9 +1,13 @@
 mod loader;
+mod running;
+pub mod js_bindings;
+
 use std::sync::LazyLock;
 
-pub use loader::*;
-
 use bevy::prelude::*;
+
+pub use loader::*;
+pub use running::*;
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum VisState {
