@@ -1,10 +1,6 @@
-use std::sync::LazyLock;
-
-use bevy::{prelude::*, window::WindowResolution};
+use bevy::prelude::*;
 use avian3d::prelude::*;
-use exploder::{js_bindings::test_extra, loader_plugin, running_plugin, AvailableBall, MyButton, VisState};
-use wasm_bindgen::prelude::*;
-use bevy_inspector_egui::{bevy_egui::EguiPlugin, quick::WorldInspectorPlugin};
+use exploder::{dropping_plugin, loader_plugin, waiting_plugin, VisState};
 
 fn main() {
     App::new()
@@ -12,8 +8,9 @@ fn main() {
         // .add_plugins(EguiPlugin::default())
         // .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(PhysicsPlugins::default())
+        .add_plugins(dropping_plugin)
         .add_plugins(loader_plugin)
-        .add_plugins(running_plugin)
+        .add_plugins(waiting_plugin)
         .insert_state(VisState::Loading)
         .run();
 }
