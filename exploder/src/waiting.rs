@@ -1,7 +1,7 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
-use crate::{js_bindings, AvailableBall, DroppingBall, VisState};
+use crate::{js_bindings::{self, getGumballs}, AvailableBall, DroppingBall, VisState};
 
 pub fn waiting_plugin(app: &mut App) {
     app.add_systems(Update, remove_ball.run_if(button_checker.and(in_state(VisState::Waiting))));
@@ -29,12 +29,10 @@ fn remove_ball(mut commands: Commands, query: Query<(Entity, &Transform), With<A
 
     if let Some((lowest_entity, _)) = lowest {
         commands.entity(lowest_entity)
-            .remove::<(AvailableBall)>().insert((DroppingBall::default(), RigidBodyDisabled));
+            .remove::<AvailableBall>().insert((DroppingBall::default(), RigidBodyDisabled));
     }
 
     *next_state = NextState::Pending(VisState::Dropping);
 
-    if js_bindings::test_extra(3.) == 4. {
-        js_bindings::test_extra(5.);
-    }
+    info!("get gumballs: {:?}", getGumballs());
 }
