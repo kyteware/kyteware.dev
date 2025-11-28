@@ -25,6 +25,12 @@ pub enum VisState {
     Dropping
 }
 
+#[derive(Debug, Component)]
+pub struct Ball {
+    pub id: u32,
+    pub category: BallCategory
+}
+
 #[derive(Component)]
 pub struct AvailableBall;
 
@@ -38,3 +44,11 @@ pub struct FinishedBall;
 
 #[derive(Component)]
 pub struct MyButton;
+
+#[derive(Clone, Copy, Debug)]
+pub enum BallCategory {
+    PersonalProject,
+    Event,
+    Experience,
+    Tidbit
+}
