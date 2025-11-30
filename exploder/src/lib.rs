@@ -25,7 +25,7 @@ pub enum VisState {
     Dropping
 }
 
-#[derive(Debug, Component)]
+#[derive(Debug, Component, Clone)]
 pub struct Ball {
     pub id: u32,
     pub category: BallCategory
@@ -45,10 +45,25 @@ pub struct FinishedBall;
 #[derive(Component)]
 pub struct MyButton;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum BallCategory {
     PersonalProject,
     Event,
     Experience,
     Tidbit
+}
+
+impl BallCategory {
+    fn mesh() -> impl Into<Mesh> {
+        return Sphere::new(BALL_RAD);
+    }
+
+    fn material(self) -> impl Into<StandardMaterial> {
+        match self {
+            BallCategory::PersonalProject => Color::linear_rgb(0.75, 0.25, 0.25),
+            BallCategory::Event => Color::linear_rgb(0.25, 0.75, 0.25),
+            BallCategory::Experience => Color::linear_rgb(0.25, 0.25, 0.75),
+            BallCategory::Tidbit => Color::linear_rgb(0.5, 0.5, 0.5),
+        }
+    }
 }

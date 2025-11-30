@@ -1,28 +1,38 @@
+use std::collections::HashMap;
+
 use bevy::{prelude::*, window::WindowResolution};
 use avian3d::prelude::*;
 
-use crate::{AvailableBall, MyButton, VisState, BALL_RAD, CAM_TRANSFORM};
+use crate::{js_bindings, AvailableBall, BallCategory, MyButton, VisState, BALL_RAD, CAM_TRANSFORM};
 
 #[derive(Resource)]
 struct LoadingData {
-    assets_to_load: Vec<UntypedHandle>
+    assets_to_load: Vec<UntypedHandle>,
+    balls_loaded: bool
+}
+
+#[derive(Resource)]
+struct BallAssets {
+    ball_mesh: Handle<Mesh>,
+    ball_materials: HashMap<BallCategory, Handle<StandardMaterial>>
 }
 
 pub fn loader_plugin(app: &mut App) {
-    app.insert_resource(LoadingData { assets_to_load: vec![] });
+    app.insert_resource(LoadingData { assets_to_load: vec![], balls_loaded: false });
     app.add_systems(
         Startup, 
         (
             setup_camera, 
             setup_lights, 
             setup_scene, 
-            setup_button
+            setup_button,
+            setup_ball_assets
         )
     );
-    app.add_systems(
-        Update,
-        start_if_done.run_if(in_state(VisState::Loading))
-    );
+    app.add_systems(Update, (
+        start_if_done,
+        try_setup_balls
+    ).run_if(in_state(VisState::Loading)));
     app.add_systems(
         OnExit(VisState::Loading),
         (add_ball_physics, add_machine_physics)
@@ -62,36 +72,61 @@ fn setup_lights(mut commands: Commands) {
 fn setup_scene(
     mut commands: Commands, 
     mut loading_data: ResMut<LoadingData>,
-    asset_server: Res<AssetServer>,
-    mesh_assets: ResMut<Assets<Mesh>>, 
-    material_assets: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>
 ) {
-    let material_assets = material_assets.into_inner();
-    let mesh_assets = mesh_assets.into_inner();
-
-    for i in 0..3 {
-        commands.spawn((
-            Mesh3d(mesh_assets.add(Sphere::new(BALL_RAD))),
-            MeshMaterial3d(material_assets.add(Color::srgb_u8(124, 144, 255))),
-            // Transform::from_xyz(0.0, 3., 1.0).rotate_local_x(0.2)
-            Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(0.5, 3. + (0.5* i as f32), 0.)),
-            AvailableBall
-        ));
-
-        commands.spawn((
-            Mesh3d(mesh_assets.add(Sphere::new(BALL_RAD))),
-            MeshMaterial3d(material_assets.add(Color::srgb_u8(255, 144, 100))),
-            // Transform::from_xyz(0.0, 3., 1.0).rotate_local_x(0.2)
-            Transform::from_rotation(Quat::from_rotation_x(-1.1)).with_translation(Vec3::new(-0.5, 3. + (0.41* i as f32), 0.)),
-            AvailableBall
-        ));
-    }
-
     let scene_handle = asset_server.load(GltfAssetLabel::Scene(0).from_asset("gumball_machine.glb"));
     loading_data.assets_to_load.push(scene_handle.clone().untyped());
     commands.spawn(
         SceneRoot(scene_handle)
     );
+}
+
+fn setup_ball_assets(
+    mut commands: Commands,
+    mut mesh_assets: ResMut<Assets<Mesh>>, 
+    mut material_assets: ResMut<Assets<StandardMaterial>>
+) {
+    use BallCategory::*;
+    commands.insert_resource(BallAssets {
+        ball_mesh: mesh_assets.add(BallCategory::mesh()),
+        ball_materials: [
+            (PersonalProject, material_assets.add(PersonalProject.material())),
+            (Event, material_assets.add(Event.material())),
+            (Experience, material_assets.add(Experience.material())),
+            (Tidbit, material_assets.add(Tidbit.material()))
+        ].into()
+    });
+}
+
+fn try_setup_balls(
+    mut commands: Commands, 
+    mut loading_data: ResMut<LoadingData>,
+    ball_assets: Res<BallAssets>,
+    time: Res<Time>,
+    mut last_requested: Local<f32>,
+    mut done: Local<bool>
+) {
+    if *done || *last_requested > time.elapsed_secs() - js_bindings::TRY_GET_GUMBALLS_COOLDOWN {
+        return;
+    }
+
+    let Some(balls) = js_bindings::try_get_gumballs() else {
+        *last_requested = time.elapsed_secs();
+        return;
+    };
+
+    for (i, ball) in balls.into_iter().enumerate() {
+        commands.spawn((
+            ball.clone(),
+            AvailableBall,
+            Mesh3d(ball_assets.ball_mesh.clone()),
+            MeshMaterial3d(ball_assets.ball_materials[&ball.category].clone()),
+            Transform::from_translation(Vec3::new(0.5, 3. + (0.5* i as f32), 0.))
+        ));
+    }
+
+    loading_data.balls_loaded = true;
+    *done = true;
 }
 
 fn setup_button(mut commands: Commands) {
@@ -113,6 +148,10 @@ fn setup_button(mut commands: Commands) {
 }
 
 fn start_if_done(mut next_state: ResMut<NextState<VisState>>, asset_server: Res<AssetServer>, loading_data: Res<LoadingData>) {
+    if !loading_data.balls_loaded {
+        return;
+    }
+    
     for to_load in &loading_data.assets_to_load {
         if !asset_server.is_loaded_with_dependencies(to_load) {
             return;
@@ -124,9 +163,7 @@ fn start_if_done(mut next_state: ResMut<NextState<VisState>>, asset_server: Res<
 }
 
 fn add_machine_physics(mut commands: Commands, query: Query<(Entity, &Mesh3d, &Name)>, mesh_assets: Res<Assets<Mesh>>) {
-    dbg!("starting query");
     for (entity, mesh, name) in &query {
-        dbg!("running query");
         if name.as_str().starts_with("inner-box-mesh") {
             dbg!("found it");
             let Some(mesh) = mesh_assets.get(&mesh.0) else {

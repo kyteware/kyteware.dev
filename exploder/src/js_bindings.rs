@@ -1,4 +1,4 @@
-use js_sys::{JsString, Reflect};
+use js_sys::Reflect;
 use wasm_bindgen::prelude::*;
 
 use crate::{Ball, BallCategory};
@@ -12,6 +12,8 @@ extern "C" {
     /// relays information about which ball fell
     pub fn dropped(id: u32);
 }
+
+pub const TRY_GET_GUMBALLS_COOLDOWN: f32 = 0.25;
 
 pub fn try_get_gumballs() -> Option<Vec<Ball>> {
     let raw_gumballs = getGumballs();
