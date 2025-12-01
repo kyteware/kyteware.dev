@@ -1,12 +1,14 @@
 mod dropping;
 mod loader;
 mod waiting;
+mod run;
 pub mod js_bindings;
 
 use std::sync::LazyLock;
 
 use bevy::prelude::*;
 
+pub use run::run;
 pub use dropping::*;
 pub use loader::*;
 pub use waiting::*;
