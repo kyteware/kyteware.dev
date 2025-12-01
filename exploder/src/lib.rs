@@ -12,10 +12,10 @@ pub use loader::*;
 pub use waiting::*;
 
 pub const DISTANCE_AWAY: f32 = 10.;
-pub const BALL_RAD: f32 = 0.30;
+pub const BALL_RAD: f32 = 0.29;
 pub const FAKE_GRAVITY: f32 = -9.81 / 20.;
 pub const FLOOR_Y_BOTTOM: f32 = 2.0;
-pub const END_BALL_LOCATION: Vec3 = Vec3::new(0.573791, 1.5128, 1.00652);
+pub const END_BALL_LOCATION: Vec3 = Vec3::new(0.573791, 1.4756, 0.47438);
 pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| Transform::from_xyz(20.7, 6.12, 7.4).looking_at(Vec3::new(0., 3., 0.), Vec3::Y) );
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]

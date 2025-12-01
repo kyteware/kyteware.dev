@@ -164,7 +164,7 @@ fn start_if_done(mut next_state: ResMut<NextState<VisState>>, asset_server: Res<
 
 fn add_machine_physics(mut commands: Commands, query: Query<(Entity, &Mesh3d, &Name)>, mesh_assets: Res<Assets<Mesh>>) {
     for (entity, mesh, name) in &query {
-        if name.as_str().starts_with("inner-box-mesh") {
+        if name.as_str().starts_with("inner") {
             dbg!("found it");
             let Some(mesh) = mesh_assets.get(&mesh.0) else {
                 return;
@@ -174,7 +174,7 @@ fn add_machine_physics(mut commands: Commands, query: Query<(Entity, &Mesh3d, &N
                 RigidBody::Static,
                 Collider::trimesh_from_mesh(mesh).unwrap(),
                 Friction::new(0.05),
-                CollisionMargin(0.1)
+                CollisionMargin(0.02)
             ));
         }
     }
