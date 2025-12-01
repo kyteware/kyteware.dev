@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use avian3d::prelude::*;
-use exploder::{dropping_plugin, loader_plugin, waiting_plugin, VisState};
+use gumballs::{dropping_plugin, loader_plugin, waiting_plugin, VisState};
 
 fn main() {
     App::new()
