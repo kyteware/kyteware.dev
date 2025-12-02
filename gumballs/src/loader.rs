@@ -106,7 +106,7 @@ fn try_setup_balls(
     mut last_requested: Local<f32>,
     mut done: Local<bool>
 ) {
-    if *done || *last_requested > time.elapsed_secs() - js_bindings::TRY_GET_GUMBALLS_COOLDOWN {
+    if *done || *last_requested > time.elapsed_secs() - js_bindings::JS_POLL_INTERVAL {
         return;
     }
 

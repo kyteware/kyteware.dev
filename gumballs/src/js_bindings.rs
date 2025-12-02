@@ -13,7 +13,7 @@ extern "C" {
     pub fn dropped(id: u32);
 }
 
-pub const TRY_GET_GUMBALLS_COOLDOWN: f32 = 0.25;
+pub const JS_POLL_INTERVAL: f32 = 1. / 10.;
 
 pub fn try_get_gumballs() -> Option<Vec<Ball>> {
     let raw_gumballs = getGumballs();

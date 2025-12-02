@@ -4,24 +4,16 @@ use bevy::prelude::*;
 use crate::{js_bindings, AvailableBall, DroppingBall, VisState};
 
 pub fn waiting_plugin(app: &mut App) {
-    app.add_systems(Update, remove_ball.run_if(button_checker.and(in_state(VisState::Waiting))));
+    app.add_systems(Update, remove_ball.run_if(check_should_drop.and(in_state(VisState::Waiting))));
 }
 
-fn button_checker(query: Query<&Interaction, With<Button>>, mut already_pressed: Local<bool>) -> bool {
-    let interaction = query.single().unwrap();
-
-    match (*already_pressed, *interaction == Interaction::Pressed) {
-        (false, true) => {
-            *already_pressed = true;
-            return true;
-        }
-        (true, false) => {
-            *already_pressed = false;
-        }
-        _ => {}
+fn check_should_drop(time: Res<Time>, mut last_checked: Local<f64>) -> bool {
+    if time.elapsed_secs_f64() > *last_checked + (js_bindings::JS_POLL_INTERVAL as f64) {
+        *last_checked = time.elapsed_secs_f64();
+        js_bindings::should_drop()
+    } else {
+        false
     }
-
-    return false;
 }
 
 fn remove_ball(mut commands: Commands, query: Query<(Entity, &Transform), With<AvailableBall>>, mut next_state: ResMut<NextState<VisState>>) {
@@ -33,6 +25,4 @@ fn remove_ball(mut commands: Commands, query: Query<(Entity, &Transform), With<A
     }
 
     *next_state = NextState::Pending(VisState::Dropping);
-
-    info!("get gumballs: {:?}", js_bindings::try_get_gumballs().unwrap());
 }
