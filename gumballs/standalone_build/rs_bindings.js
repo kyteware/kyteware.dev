@@ -14,3 +14,7 @@ window.getGumballs = () => {
     ]
   }
 }
+
+window.shouldDrop = () => {
+  return true;
+}

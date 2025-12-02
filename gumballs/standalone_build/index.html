@@ -4,7 +4,7 @@
 <body style="margin: 0px;">
   <script src="./rs_bindings.js"></script>
   <script type="module">
-    import init from './gumball.js'
+    import init from './gumball-standalone.js'
 
     init().catch((error) => {
       if (!error.message.startsWith("Using exceptions for control flow, don't mind me. This isn't actually an error!")) {
