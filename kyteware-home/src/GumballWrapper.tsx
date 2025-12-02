@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import * as wasm from 'gumballs';
 
-export default function GumballWrapper() {
+interface GumballWrapperProps {
+    dropPressed: boolean,
+    setDropPressed: (a: boolean) => void
+}
+
+export default function GumballWrapper({ dropPressed, setDropPressed }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
-    const [hasDropped, setHasDropped] = useState(false);
 
     const getGumballsCallback = useCallback(() => {
         console.log("hi");
@@ -22,15 +26,13 @@ export default function GumballWrapper() {
     }, []);
 
     const shouldDropCallback = useCallback(() => {
-        const ret = !hasDropped;
-
-        if (!hasDropped) {
-            setHasDropped(true);
+        const ret = dropPressed;
+        if (dropPressed == true) {
+            setDropPressed(false);
         }
 
-        console.log("hello " + ret);
         return ret;
-    }, [hasDropped]);
+    }, [dropPressed]);
 
     const droppedCallback = useCallback(() => {
         
