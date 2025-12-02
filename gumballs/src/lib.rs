@@ -11,6 +11,7 @@ use bevy::prelude::*;
 pub use run::run;
 pub use dropping::*;
 pub use loader::*;
+use serde::Deserialize;
 pub use waiting::*;
 
 pub const DISTANCE_AWAY: f32 = 10.;
@@ -27,10 +28,18 @@ pub enum VisState {
     Dropping
 }
 
-#[derive(Debug, Component, Clone)]
+#[derive(Debug, Component, Clone, Deserialize)]
 pub struct Ball {
     pub id: u32,
     pub category: BallCategory
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Deserialize)]
+pub enum BallCategory {
+    PersonalProject,
+    Event,
+    Experience,
+    Tidbit
 }
 
 #[derive(Component)]
@@ -46,14 +55,6 @@ pub struct FinishedBall;
 
 #[derive(Component)]
 pub struct MyButton;
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum BallCategory {
-    PersonalProject,
-    Event,
-    Experience,
-    Tidbit
-}
 
 impl BallCategory {
     fn mesh() -> impl Into<Mesh> {

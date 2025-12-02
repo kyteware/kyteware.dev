@@ -1,51 +1,51 @@
-use js_sys::Reflect;
-use wasm_bindgen::prelude::*;
+use std::sync::RwLock;
 
-use crate::{Ball, BallCategory};
+use bevy_channel_trigger::{ChannelSender, ChannelTriggerApp};
+use wasm_bindgen::prelude::*;
+use bevy::prelude::*;
+
+use crate::Ball;
+
+static GUMBALLS_AVAILABLE_EVENT_SENDER: RwLock<Option<ChannelSender<GumballsAvailable>>> = RwLock::new(None);
+static GUMBALL_DROP_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDrop>>> = RwLock::new(None);
 
 #[wasm_bindgen]
 extern "C" {
-    /// should be a list in the format ["CATEGORY": [ID, ...], ...]
-    fn getGumballs() -> JsValue;
-    /// polls if the gumball machine should dispense
-    fn shouldDrop() -> bool;
     /// relays information about which ball fell
     pub fn dropped(id: u32);
 }
 
-pub const JS_POLL_INTERVAL: f32 = 1. / 10.;
+#[derive(Event)]
+pub struct GumballsAvailable(pub Vec<Ball>);
 
-pub fn try_get_gumballs() -> Option<Vec<Ball>> {
-    let raw_gumballs = getGumballs();
+#[derive(Event)]
+pub struct GumballDrop;
 
-    let mut gumballs = vec![];
+pub fn js_binding_plugin(app: &mut App) {
+    let mut gumballs_available_sender = GUMBALLS_AVAILABLE_EVENT_SENDER.write().unwrap();
+    let mut gumball_drop_sender = GUMBALL_DROP_EVENT_SENDER.write().unwrap();
 
-    for (category, cat_str) in [
-        (BallCategory::PersonalProject, "personal_projects"),
-        (BallCategory::Experience, "experiences"),
-        (BallCategory::Event, "events"),
-        (BallCategory::Tidbit, "tidbits")
-    ] {
-        if let Ok(raw_inner_list) = Reflect::get(&raw_gumballs, &JsValue::from_str(cat_str)) {
-            if !(raw_inner_list.is_array()) {
-                return None; // TODO: throw error
-            }
-            let inner_list = js_sys::Array::from(&raw_inner_list);
-            for raw_id in inner_list {
-                if let Some(id) = raw_id.as_f64() {
-                    gumballs.push(Ball { id: id.round() as u32, category });
-                } else {
-                    return None;
-                }
-            }
-        } else {
-            return None; // TODO: throw error
-        }
-    }
-
-    Some(gumballs)
+    *gumballs_available_sender = Some(app.add_channel_trigger::<GumballsAvailable>());
+    *gumball_drop_sender = Some(app.add_channel_trigger::<GumballDrop>());
 }
 
-pub fn should_drop() -> bool {
-    shouldDrop()
+#[wasm_bindgen]
+pub fn gumballs_available(raw_gumballs: JsValue) -> Result<(), JsValue> {
+    let gumballs: Vec<Ball> = serde_wasm_bindgen::from_value(raw_gumballs)?;
+    GUMBALLS_AVAILABLE_EVENT_SENDER.read()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .send(GumballsAvailable(gumballs));
+
+    Ok(())
+}
+
+#[wasm_bindgen]
+pub fn drop_gumball() {
+    GUMBALL_DROP_EVENT_SENDER.read()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .send(GumballDrop);
 }

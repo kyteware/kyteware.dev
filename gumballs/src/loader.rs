@@ -29,9 +29,9 @@ pub fn loader_plugin(app: &mut App) {
             setup_ball_assets
         )
     );
+    app.add_observer(on_gumballs_available);
     app.add_systems(Update, (
         start_if_done,
-        try_setup_balls
     ).run_if(in_state(VisState::Loading)));
     app.add_systems(
         OnExit(VisState::Loading),
@@ -98,24 +98,13 @@ fn setup_ball_assets(
     });
 }
 
-fn try_setup_balls(
+fn on_gumballs_available(
+    available: On<js_bindings::GumballsAvailable>,
     mut commands: Commands, 
     mut loading_data: ResMut<LoadingData>,
     ball_assets: Res<BallAssets>,
-    time: Res<Time>,
-    mut last_requested: Local<f32>,
-    mut done: Local<bool>
 ) {
-    if *done || *last_requested > time.elapsed_secs() - js_bindings::JS_POLL_INTERVAL {
-        return;
-    }
-
-    let Some(balls) = js_bindings::try_get_gumballs() else {
-        *last_requested = time.elapsed_secs();
-        return;
-    };
-
-    for (i, ball) in balls.into_iter().enumerate() {
+    for (i, ball) in available.0.iter().enumerate() {
         commands.spawn((
             ball.clone(),
             AvailableBall,
@@ -126,7 +115,6 @@ fn try_setup_balls(
     }
 
     loading_data.balls_loaded = true;
-    *done = true;
 }
 
 fn setup_button(mut commands: Commands) {

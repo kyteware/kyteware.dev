@@ -14,5 +14,8 @@ path = "src/main.rs"
 avian3d = "0.4.1"
 bevy = "0.17.3"
 bevy-inspector-egui = "0.35.0"
+bevy_channel_trigger = "0.5.0"
 js-sys = "0.3.83"
 wasm-bindgen = "0.2.105"
+serde = { version = "1.0.228", features = ["derive"] }
+serde-wasm-bindgen = "0.6.5"
