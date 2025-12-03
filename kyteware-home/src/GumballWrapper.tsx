@@ -2,70 +2,47 @@ import { useCallback, useEffect, useState } from "react";
 import * as wasm from 'gumballs';
 
 interface GumballWrapperProps {
-    dropPressed: boolean,
-    setDropPressed: (a: boolean) => void
+    dropTrigger: number
 }
 
-export default function GumballWrapper({ dropPressed, setDropPressed }: GumballWrapperProps) {
+export default function GumballWrapper({ dropTrigger }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
-
-    const getGumballsCallback = useCallback(() => {
-        console.log("hi");
-        return {
-            "personal_projects": [
-                
-            ],
-            "experiences": [
-                5, 6
-            ],
-            "events": [],
-            "tidbits": [
-                7, 8, 9
-            ]
-        }
-    }, []);
-
-    const shouldDropCallback = useCallback(() => {
-        const ret = dropPressed;
-        if (dropPressed == true) {
-            setDropPressed(false);
-        }
-
-        return ret;
-    }, [dropPressed]);
 
     const droppedCallback = useCallback(() => {
         
     }, []);
 
+    // register dropped callback
     useEffect(() => {
-        (window as any).getGumballs = getGumballsCallback;
-        (window as any).shouldDrop = shouldDropCallback;
         (window as any).dropped = droppedCallback;
 
         return () => {
-        (window as any).getGumballs = undefined;
-        (window as any).shouldDrop = undefined;
         (window as any).dropped = undefined;
         }
-    }, [getGumballsCallback, shouldDropCallback]);
+    }, [droppedCallback]);
 
+    // init wasm
     useEffect(() => {
         wasm.default()
             .then(() => {
                 console.log("gumballs module initialized");
+                wasm.run();
                 setIsWasmLoaded(true);
+                wasm.gumballs_available([{category: "Event", id: 1}, {category: "PersonalProject", id: 2}]);
             })
             .catch(error => {
                 console.error("couldn't load gumballs wasm module: ", error);
             });
     }, []);
 
+    // drop on trigger
     useEffect(() => {
-        if (isWasmLoaded) {
-            wasm.run();
+        if (!isWasmLoaded) {
+            return;
         }
-    }, [isWasmLoaded]);
+
+        wasm.drop_gumball();
+    }, [dropTrigger])
 
     return (
         <div id="gumball-wrapper">

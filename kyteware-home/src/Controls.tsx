@@ -1,14 +1,12 @@
-import { useCallback } from "react";
-
-export default function Controls({ setDropPressed }: { setDropPressed: (a: boolean) => void }) {
-    const buttonCallback = useCallback(() => {
-        setDropPressed(true);
-    }, [setDropPressed]);
+export default function Controls({ triggerDrop }: { triggerDrop: React.Dispatch<React.SetStateAction<number>> }) {
+    let handleClick = () => {
+        triggerDrop((old) => old + 1);
+    }
 
     return (
         <div id="controls">
             <p>controls</p>
-            <button onClick={buttonCallback}>drop</button>
+            <button onClick={handleClick}>drop</button>
         </div>
     );
 }
