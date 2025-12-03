@@ -1,0 +1,1 @@
+wasm-pack --log-level info build --target web --profiling --no-opt
