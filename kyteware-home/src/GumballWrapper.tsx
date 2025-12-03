@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import * as wasm from 'gumballs';
+import type { Gumballs } from "./model";
 
 interface GumballWrapperProps {
-    dropTrigger: number
+    dropTrigger: number,
+    gumballs: Gumballs | null
 }
 
-export default function GumballWrapper({ dropTrigger }: GumballWrapperProps) {
+export default function GumballWrapper({ dropTrigger, gumballs }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
 
     const droppedCallback = useCallback(() => {
@@ -28,12 +30,18 @@ export default function GumballWrapper({ dropTrigger }: GumballWrapperProps) {
                 console.log("gumballs module initialized");
                 wasm.run();
                 setIsWasmLoaded(true);
-                wasm.gumballs_available([{category: "Event", id: 1}, {category: "PersonalProject", id: 2}]);
-            })
+             })
             .catch(error => {
                 console.error("couldn't load gumballs wasm module: ", error);
             });
     }, []);
+
+    // send gumballs when ready
+    useEffect(() => {
+        if (isWasmLoaded && gumballs !== null) {
+            wasm.gumballs_available(gumballs.gumballs);
+        }
+    }, [isWasmLoaded, gumballs]);
 
     // drop on trigger
     useEffect(() => {
