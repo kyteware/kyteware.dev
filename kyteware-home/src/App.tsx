@@ -5,8 +5,10 @@ import GumballWrapper from './GumballWrapper'
 import { Gumballs } from './model';
 
 export default function App() {
-    const [dropTrigger, triggerDrop] = useState(0);
     const [gumballs, setGumballs] = useState<Gumballs | null>(null);
+
+    const [dropTrigger, triggerDrop] = useState(0);
+    const [lastDropped, setLastDropped] = useState<number | null>(null);
 
     // retrieve gumballs
     useEffect(() => {
@@ -34,8 +36,8 @@ export default function App() {
             <div id="headerbar">
                 <p>headerbar</p>
             </div>
-            <Controls triggerDrop={triggerDrop}/>
-            <GumballWrapper dropTrigger={dropTrigger} gumballs={gumballs}/>
+            <Controls gumballs={gumballs} triggerDrop={triggerDrop} lastDropped={lastDropped}/>
+            <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} setLastDropped={setLastDropped}/>
             <div id="statusbar">
                 <p>statusbar</p>
             </div>

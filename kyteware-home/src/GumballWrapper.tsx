@@ -3,16 +3,17 @@ import * as wasm from 'gumballs';
 import type { Gumballs } from "./model";
 
 interface GumballWrapperProps {
-    dropTrigger: number,
     gumballs: Gumballs | null
+    dropTrigger: number,
+    setLastDropped: (id: number) => void,
 }
 
-export default function GumballWrapper({ dropTrigger, gumballs }: GumballWrapperProps) {
+export default function GumballWrapper({ gumballs, dropTrigger, setLastDropped }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
 
-    const droppedCallback = useCallback(() => {
-        
-    }, []);
+    const droppedCallback = useCallback((id: number) => {
+        setLastDropped(id);
+    }, [setLastDropped]);
 
     // register dropped callback
     useEffect(() => {
