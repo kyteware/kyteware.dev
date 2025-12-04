@@ -5,24 +5,25 @@ import type { Gumballs } from "./model";
 interface GumballWrapperProps {
     gumballs: Gumballs | null
     dropTrigger: number,
+    ejectTrigger: number,
     setLastDropped: (id: number) => void,
 }
 
-export default function GumballWrapper({ gumballs, dropTrigger, setLastDropped }: GumballWrapperProps) {
+export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
 
-    const droppedCallback = useCallback((id: number) => {
+    const doneDroppingCallback = useCallback((id: number) => {
         setLastDropped(id);
     }, [setLastDropped]);
 
     // register dropped callback
     useEffect(() => {
-        (window as any).dropped = droppedCallback;
+        (window as any).doneDropping = doneDroppingCallback;
 
         return () => {
-        (window as any).dropped = undefined;
+        (window as any).doneDropping = undefined;
         }
-    }, [droppedCallback]);
+    }, [doneDroppingCallback]);
 
     // init wasm
     useEffect(() => {
@@ -51,7 +52,15 @@ export default function GumballWrapper({ gumballs, dropTrigger, setLastDropped }
         }
 
         wasm.drop_gumball();
-    }, [dropTrigger])
+    }, [dropTrigger]);
+
+    useEffect(() => {
+        if (!isWasmLoaded) {
+            return;
+        }
+
+        wasm.discard_gumball();
+    }, [ejectTrigger]);
 
     return (
         <div id="gumball-wrapper">

@@ -8,6 +8,7 @@ export default function App() {
     const [gumballs, setGumballs] = useState<Gumballs | null>(null);
 
     const [dropTrigger, triggerDrop] = useState(0);
+    const [ejectTrigger, triggerEject] = useState(0);
     const [lastDropped, setLastDropped] = useState<number | null>(null);
 
     // retrieve gumballs
@@ -36,8 +37,8 @@ export default function App() {
             <div id="headerbar">
                 <p>headerbar</p>
             </div>
-            <Controls gumballs={gumballs} triggerDrop={triggerDrop} lastDropped={lastDropped}/>
-            <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} setLastDropped={setLastDropped}/>
+            <Controls gumballs={gumballs} triggerDrop={triggerDrop} triggerEject={triggerEject} lastDropped={lastDropped}/>
+            <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} ejectTrigger={ejectTrigger} setLastDropped={setLastDropped}/>
             <div id="statusbar">
                 <p>statusbar</p>
             </div>

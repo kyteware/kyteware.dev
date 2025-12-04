@@ -4,6 +4,7 @@ import type { Gumballs } from "./model";
 interface ControlsProps {
     gumballs: Gumballs | null,
     triggerDrop: React.Dispatch<React.SetStateAction<number>>,
+    triggerEject: React.Dispatch<React.SetStateAction<number>>,
     lastDropped: number | null
 }
 
@@ -13,7 +14,7 @@ enum Stage {
     FACT_DISPLAYED = "FACT_DISPLAYED",
 }
 
-export default function Controls({ gumballs, triggerDrop, lastDropped }: ControlsProps) {
+export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped }: ControlsProps) {
     const [stage, setStage] = useState(Stage.READY);
 
     let handleDropPressed = () => {
@@ -28,11 +29,9 @@ export default function Controls({ gumballs, triggerDrop, lastDropped }: Control
     }, [lastDropped]);
 
     let handleNextPressed = () => {
+        triggerEject((old) => old + 1)
         setStage(Stage.READY);
-        // eject ball
     }
-
-
 
     let inner: JSX.Element = <></>;
     if (stage === Stage.READY) {
