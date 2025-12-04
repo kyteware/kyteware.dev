@@ -39,9 +39,9 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
     } else if (stage === Stage.DROPPING) {
         inner = <p>waiting to be finished dropping</p>
     } else if (stage === Stage.FACT_DISPLAYED) {
-        const fact = gumballs!.gumballs[lastDropped!];
+        const fact = gumballs!.find(lastDropped!);
         inner = (<>
-            <h1>fact: {fact.name}</h1>
+            <h3>fact: {fact.name}</h3>
             <p>description: {fact.description}</p>
             <button onClick={handleNextPressed}>discord</button>
         </>);

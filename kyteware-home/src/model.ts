@@ -28,7 +28,7 @@ export class Gumballs {
     gumballs: Array<Gumball>
 
     constructor(raw: GumballSourceData) {
-        let idCounter = 1;
+        let idCounter = 0;
 
         const entries = [
             { cat: GumballCategory.PersonalProject, data: raw.personal_projects },
@@ -41,10 +41,14 @@ export class Gumballs {
             entry => entry.data.map(
                 rawGumball => ({
                     ...rawGumball,
-                    id: ++idCounter,
+                    id: idCounter++,
                     category: entry.cat
                 })
             )
         )
+    }
+
+    find(id: number) {
+        return this.gumballs[id];
     }
 }
