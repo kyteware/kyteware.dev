@@ -8,11 +8,12 @@ use crate::Ball;
 
 static GUMBALLS_AVAILABLE_EVENT_SENDER: RwLock<Option<ChannelSender<GumballsAvailable>>> = RwLock::new(None);
 static GUMBALL_DROP_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDrop>>> = RwLock::new(None);
+static GUMBALL_DISCARD_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDiscard>>> = RwLock::new(None);
 
 #[wasm_bindgen]
 extern "C" {
     /// relays information about which ball fell
-    pub fn dropped(id: u32);
+    pub fn doneDropping(id: u32);
 }
 
 #[derive(Event)]
@@ -21,12 +22,17 @@ pub struct GumballsAvailable(pub Vec<Ball>);
 #[derive(Event)]
 pub struct GumballDrop;
 
+#[derive(Event)]
+pub struct GumballDiscard;
+
 pub fn js_binding_plugin(app: &mut App) {
     let mut gumballs_available_sender = GUMBALLS_AVAILABLE_EVENT_SENDER.write().unwrap();
     let mut gumball_drop_sender = GUMBALL_DROP_EVENT_SENDER.write().unwrap();
+    let mut gumball_discard_sender = GUMBALL_DISCARD_EVENT_SENDER.write().unwrap();
 
     *gumballs_available_sender = Some(app.add_channel_trigger::<GumballsAvailable>());
     *gumball_drop_sender = Some(app.add_channel_trigger::<GumballDrop>());
+    *gumball_discard_sender = Some(app.add_channel_trigger::<GumballDiscard>());
 }
 
 #[wasm_bindgen]
@@ -48,4 +54,13 @@ pub fn drop_gumball() {
         .as_ref()
         .unwrap()
         .send(GumballDrop);
+}
+
+#[wasm_bindgen]
+pub fn discard_gumball() {
+    GUMBALL_DISCARD_EVENT_SENDER.read()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .send(GumballDiscard);
 }

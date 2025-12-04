@@ -18,3 +18,7 @@ window.getGumballs = () => {
 window.shouldDrop = () => {
   return true;
 }
+
+window.doneDropping = (num) => {
+  console.log("dropped: " + num);
+}

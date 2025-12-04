@@ -18,7 +18,9 @@ pub const DISTANCE_AWAY: f32 = 10.;
 pub const BALL_RAD: f32 = 0.29;
 pub const FAKE_GRAVITY: f32 = -9.81 / 20.;
 pub const FLOOR_Y_BOTTOM: f32 = 2.0;
-pub const END_BALL_LOCATION: Vec3 = Vec3::new(0.573791, 1.4756, 0.47438);
+pub const HIDDEN_BALL_CHAMBER_COORDS: Vec3 = Vec3::new(0.573791, 1.4756, 0.47438);
+pub const FINAL_BALL_LANDING_COORDS: Vec3 = Vec3::new(0.58, 1.4, 1.27);
+pub const GUMBALL_EJECT_VELOCITY: Vec3 = Vec3::new(0., 4., 1.);
 pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| Transform::from_xyz(20.7, 6.12, 7.4).looking_at(Vec3::new(0., 3., 0.), Vec3::Y) );
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
