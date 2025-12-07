@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use bevy::{prelude::*, window::WindowResolution};
+use bevy::prelude::*;
 use avian3d::prelude::*;
 
-use crate::{js_bindings, AvailableBall, BallCategory, MyButton, VisState, BALL_RAD, CAM_TRANSFORM};
+use crate::{js_bindings, AvailableBall, BallCategory, MyButton, VisState, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR};
 
 #[derive(Resource)]
 struct LoadingData {
@@ -26,7 +26,8 @@ pub fn loader_plugin(app: &mut App) {
             setup_lights, 
             setup_scene, 
             setup_button,
-            setup_ball_assets
+            setup_ball_assets,
+            setup_floor
         )
     );
     app.add_observer(on_gumballs_available);
@@ -39,7 +40,14 @@ pub fn loader_plugin(app: &mut App) {
     );
 }
 
-fn setup_camera(mut commands: Commands, mut query: Query<&mut Window, With<bevy::window::PrimaryWindow>>) {
+fn setup_camera(mut commands: Commands) {
+    commands.insert_resource(ClearColor(BACKGROUND_COLOR));
+    commands.insert_resource(AmbientLight {
+        color: BACKGROUND_COLOR,
+        brightness: 0.1,
+        affects_lightmapped_meshes: true
+    });
+
     commands.spawn((
         Camera3d::default(),
         Projection::from(PerspectiveProjection {
@@ -48,24 +56,50 @@ fn setup_camera(mut commands: Commands, mut query: Query<&mut Window, With<bevy:
         }),
         *CAM_TRANSFORM,
     ));
-
-    query.single_mut().unwrap().resolution = WindowResolution::new(500, 1000);
 }
 
 fn setup_lights(mut commands: Commands) {
     commands.spawn((
-        PointLight {
+        SpotLight {
+            intensity: 1_000_000.,
+            radius: 0.5,
             shadows_enabled: true,
             ..default()
         },
-        Transform::from_xyz(7., 5., 5.).looking_at(Vec3::splat(0.), Vec3::Y)
+        Transform::from_translation(Vec3::new(1.5, 15., 1.5)).looking_at(Vec3::ZERO, Vec3::Y)
     ));
+    // commands.spawn((
+    //     SpotLight {
+    //         intensity: 1_000_000.,
+    //         radius: 1.,
+    //         shadows_enabled: true,
+    //         ..default()
+    //     },
+    //     Transform::from_translation(Vec3::new(1., 15., 1.5)).looking_at(Vec3::ZERO, Vec3::Y)
+    // ));
+}
+
+fn setup_floor(
+    mut commands: Commands,
+    mut mesh_assets: ResMut<Assets<Mesh>>,
+    mut material_assets: ResMut<Assets<StandardMaterial>>,
+) {
+    let cuboid_size = Vec3::new(1000., 0.05, 1000.);
+
+
     commands.spawn((
-        PointLight {
-            shadows_enabled: true,
-            ..default()
-        },
-        Transform::from_xyz(6.0, 8.0, 2.0),
+        Mesh3d(
+            mesh_assets.add(Cuboid::from_size(cuboid_size))
+        ),
+        MeshMaterial3d(material_assets.add(
+            StandardMaterial {
+                base_color: FLOOR_COLOR,
+                reflectance: 0.5,
+                ..default()
+            }
+        )),
+        RigidBody::Static,
+        Collider::cuboid(cuboid_size.x, cuboid_size.y, cuboid_size.z)
     ));
 }
 
