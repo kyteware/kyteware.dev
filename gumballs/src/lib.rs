@@ -2,6 +2,7 @@ mod dropping;
 mod loader;
 mod waiting;
 mod run;
+mod machine_lights;
 pub mod js_bindings;
 
 use std::sync::LazyLock;
@@ -13,17 +14,33 @@ pub use dropping::*;
 pub use loader::*;
 use serde::Deserialize;
 pub use waiting::*;
+pub use machine_lights::*;
 
-pub const DISTANCE_AWAY: f32 = 10.;
 pub const BALL_RAD: f32 = 0.29;
 pub const FAKE_GRAVITY: f32 = -9.81 / 20.;
 pub const FLOOR_Y_BOTTOM: f32 = 2.0;
 pub const HIDDEN_BALL_CHAMBER_COORDS: Vec3 = Vec3::new(0.573791, 1.4756, 0.47438);
 pub const FINAL_BALL_LANDING_COORDS: Vec3 = Vec3::new(0.58, 1.4, 1.27);
 pub const GUMBALL_EJECT_VELOCITY: Vec3 = Vec3::new(0., 4., 1.);
+
 pub const BACKGROUND_COLOR: Color = Color::srgb_u8(36, 27, 60);
 pub const FLOOR_COLOR: Color = Color::srgb_u8(200, 200, 200);
-pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| Transform::from_xyz(20.7, 6.12, 7.4).looking_at(Vec3::new(0., 3., 0.), Vec3::Y) );
+
+pub const SPOTLIGHT_POS: Vec3 = Vec3::new(1.0, 15., 1.0);
+pub const SPOTLIGHT_INNER_ANGLE: f32 = f32::to_radians(10.);
+pub const SPOTLIGHT_OUTER_ANGLE: f32 = f32::to_radians(18.);
+pub const SPOTLIGHT_INTENSITY: f32 = 1_200_000.;
+
+pub const MACHINE_LIGHT_POSITIONS: [Vec3; 2] = [
+    Vec3::new(0.7, 5.5, 0.),
+    Vec3::new(-0.7, 5.5, 0.),
+];
+pub const MACHINE_LIGHT_INTENSITY: f32 = 100_000.;
+
+pub const AMBIENT_BRIGHTNESS: f32 = 100.;
+pub const AMBIENT_COLOR: Color = Color::srgb_u8(36, 27, 60);
+
+pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| Transform::from_xyz(20.7, 8.5, 9.4).looking_at(Vec3::new(0., 3., 0.), Vec3::Y) );
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum VisState {

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use bevy::prelude::*;
 use avian3d::prelude::*;
 
-use crate::{js_bindings, AvailableBall, BallCategory, MyButton, VisState, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR};
+use crate::{js_bindings, AvailableBall, BallCategory, MyButton, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
 
 #[derive(Resource)]
 struct LoadingData {
@@ -23,11 +23,12 @@ pub fn loader_plugin(app: &mut App) {
         Startup, 
         (
             setup_camera, 
-            setup_lights, 
+            setup_spotlight, 
             setup_scene, 
             setup_button,
             setup_ball_assets,
-            setup_floor
+            setup_floor,
+            setup_machine_lights
         )
     );
     app.add_observer(on_gumballs_available);
@@ -43,8 +44,8 @@ pub fn loader_plugin(app: &mut App) {
 fn setup_camera(mut commands: Commands) {
     commands.insert_resource(ClearColor(BACKGROUND_COLOR));
     commands.insert_resource(AmbientLight {
-        color: BACKGROUND_COLOR,
-        brightness: 0.1,
+        color: AMBIENT_COLOR,
+        brightness: AMBIENT_BRIGHTNESS,
         affects_lightmapped_meshes: true
     });
 
@@ -58,25 +59,33 @@ fn setup_camera(mut commands: Commands) {
     ));
 }
 
-fn setup_lights(mut commands: Commands) {
+fn setup_spotlight(mut commands: Commands) {
     commands.spawn((
         SpotLight {
-            intensity: 1_000_000.,
-            radius: 0.5,
+            intensity: SPOTLIGHT_INTENSITY,
+            radius: 0.0,
             shadows_enabled: true,
+            outer_angle: SPOTLIGHT_OUTER_ANGLE,
+            inner_angle: SPOTLIGHT_INNER_ANGLE,
             ..default()
         },
-        Transform::from_translation(Vec3::new(1.5, 15., 1.5)).looking_at(Vec3::ZERO, Vec3::Y)
+        Transform::from_translation(SPOTLIGHT_POS).looking_at(Vec3::ZERO, Vec3::Y)
     ));
-    // commands.spawn((
-    //     SpotLight {
-    //         intensity: 1_000_000.,
-    //         radius: 1.,
-    //         shadows_enabled: true,
-    //         ..default()
-    //     },
-    //     Transform::from_translation(Vec3::new(1., 15., 1.5)).looking_at(Vec3::ZERO, Vec3::Y)
-    // ));
+}
+
+fn setup_machine_lights(mut commands: Commands) {
+    for pos in MACHINE_LIGHT_POSITIONS {
+        commands.spawn((
+            PointLight {
+                intensity: MACHINE_LIGHT_INTENSITY,
+                shadows_enabled: true,
+                radius: 0.,
+                range: 10.,
+                ..default()
+            },
+            Transform::from_translation(pos)
+        ));
+    }
 }
 
 fn setup_floor(
