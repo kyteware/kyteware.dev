@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use bevy::prelude::*;
 use avian3d::prelude::*;
 
-use crate::{js_bindings, AvailableBall, BallCategory, MyButton, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
+use crate::{js_bindings, AvailableBall, BallCategory, MachineLight, MyButton, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, MACHINE_LIGHT_RANGE, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
 
 #[derive(Resource)]
 struct LoadingData {
@@ -80,10 +80,11 @@ fn setup_machine_lights(mut commands: Commands) {
                 intensity: MACHINE_LIGHT_INTENSITY,
                 shadows_enabled: true,
                 radius: 0.,
-                range: 10.,
+                range: MACHINE_LIGHT_RANGE,
                 ..default()
             },
-            Transform::from_translation(pos)
+            Transform::from_translation(pos),
+            MachineLight::default()
         ));
     }
 }

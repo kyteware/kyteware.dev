@@ -2,7 +2,7 @@ use avian3d::PhysicsPlugins;
 use bevy::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use crate::{dropping_plugin, js_bindings::js_binding_plugin, loader_plugin, waiting_plugin, VisState};
+use crate::{dropping_plugin, js_bindings::js_binding_plugin, loader_plugin, machine_lights_plugin, waiting_plugin, VisState};
 
 #[wasm_bindgen]
 pub fn run() {
@@ -22,6 +22,7 @@ pub fn run() {
         .add_plugins(loader_plugin)
         .add_plugins(waiting_plugin)
         .add_plugins(js_binding_plugin)
+        .add_plugins(machine_lights_plugin)
         .insert_state(VisState::Loading)
         .run();
 }
