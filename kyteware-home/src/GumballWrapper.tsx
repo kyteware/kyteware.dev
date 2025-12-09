@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import * as wasm from 'gumballs';
 import type { Gumballs } from "./model";
+import './GumballWrapper.css';
 
 interface GumballWrapperProps {
     gumballs: Gumballs | null
