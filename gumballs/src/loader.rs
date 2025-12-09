@@ -24,8 +24,7 @@ pub fn loader_plugin(app: &mut App) {
         (
             setup_camera, 
             setup_spotlight, 
-            setup_scene, 
-            setup_button,
+            setup_scene,
             setup_ball_assets,
             setup_floor,
             setup_machine_lights
@@ -159,24 +158,6 @@ fn on_gumballs_available(
     }
 
     loading_data.balls_loaded = true;
-}
-
-fn setup_button(mut commands: Commands) {
-    commands.spawn((
-        Node {
-            ..default()
-        },
-        children![(
-            Button,
-            MyButton,
-            Node {
-                ..default()
-            },
-            children![
-                Text::new("hi")
-            ]
-        )]
-    ));
 }
 
 fn start_if_done(mut next_state: ResMut<NextState<VisState>>, asset_server: Res<AssetServer>, loading_data: Res<LoadingData>) {
