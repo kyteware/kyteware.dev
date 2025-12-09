@@ -39,9 +39,6 @@ export default function App() {
             </div>
             <Controls gumballs={gumballs} triggerDrop={triggerDrop} triggerEject={triggerEject} lastDropped={lastDropped}/>
             <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} ejectTrigger={ejectTrigger} setLastDropped={setLastDropped}/>
-            <div id="statusbar">
-                <p>statusbar</p>
-            </div>
         </div>
     )
 }

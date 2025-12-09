@@ -1,5 +1,6 @@
 import { useEffect, useState, type JSX } from "react";
 import type { Gumballs } from "./model";
+import './Controls.css';
 
 interface ControlsProps {
     gumballs: Gumballs | null,
@@ -49,8 +50,10 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
 
     return (
         <div id="controls">
-            <p>controls</p>
-            {inner}
+            <div id="control-panel">
+                <p>controls</p>
+                {inner}
+            </div>
         </div>
     );
 }
