@@ -15,7 +15,7 @@
   height: 100%;
 
   border: var(--standard-border-width) solid var(--color-secondary);
-  border-radius: var(--stardard-border-radius);
+  border-radius: var(--standard-border-radius);
 
   padding: 15px;
   background-color: var(--color-fg);
@@ -25,7 +25,13 @@
   flex-direction: column;
 }
 
-.controlInner {
+.controlsInner {
   flex-grow: 1;
-  overflow: scroll;
+  overflow-y: scroll;
+  flex-shrink: 1;
+}
+
+.controlButton {
+  flex-shrink: 0;
+  flex-grow: 0;
 }
