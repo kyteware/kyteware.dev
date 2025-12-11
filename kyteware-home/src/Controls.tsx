@@ -65,7 +65,7 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
                 <div className="controlsInner">
                     {inner}
                 </div>
-                <button onClick={buttonOnClick} disabled={buttonDisabled}>{buttonText}</button>
+                <button onClick={buttonOnClick} className={buttonDisabled ? "buttonDisabled" : ""}>{buttonText}</button>
             </div>
         </div>
     );
