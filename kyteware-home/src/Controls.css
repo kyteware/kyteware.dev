@@ -2,7 +2,6 @@
 
 #controls {
   padding: 20px;
-  box-sizing: border-box;
   display: flex;
 
   flex-direction: column;
@@ -14,6 +13,18 @@
   max-width: 300px;
   height: 100%;
 
+  border: var(--standard-border-width) solid var(--color-secondary);
+  border-radius: var(--stardard-border-radius);
+
+  padding: 15px;
   background-color: var(--color-fg);
   overflow: hidden; /* stops the text margins from moving the div down */
+
+  display: flex;
+  flex-direction: column;
+}
+
+.controlInner {
+  flex-grow: 1;
+  overflow: scroll;
 }

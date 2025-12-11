@@ -35,24 +35,37 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
     }
 
     let inner: JSX.Element = <></>;
+    let buttonText = "";
+    let buttonOnClick = () => {};
+    let buttonDisabled = false;
+
     if (stage === Stage.READY) {
-        inner = <button onClick={handleDropPressed}>drop</button>
+        inner = <p>ready</p>;
+        buttonText = "Drop";
+        buttonOnClick = handleDropPressed;
     } else if (stage === Stage.DROPPING) {
-        inner = <p>waiting to be finished dropping</p>
+        inner = <p>waiting to be finished dropping</p>;
+        buttonText = "Dropping..."
+        buttonOnClick = () => {};
+        buttonDisabled = true;
     } else if (stage === Stage.FACT_DISPLAYED) {
         const fact = gumballs!.find(lastDropped!);
         inner = (<>
-            <h3>fact: {fact.name}</h3>
+            <h5>{fact.category}</h5>
+            <h3>{fact.name}</h3>
             <p>description: {fact.description}</p>
-            <button onClick={handleNextPressed}>discord</button>
         </>);
+        buttonOnClick = handleNextPressed;
+        buttonText = "Discard";
     }
 
     return (
         <div id="controls">
             <div id="control-panel">
-                <p>controls</p>
-                {inner}
+                <div className="controlsInner">
+                    {inner}
+                </div>
+                <button onClick={buttonOnClick} disabled={buttonDisabled}>{buttonText}</button>
             </div>
         </div>
     );
