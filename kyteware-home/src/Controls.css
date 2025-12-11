@@ -1,3 +1,5 @@
+@import url("colors.css");
+
 #controls {
   padding: 20px;
   box-sizing: border-box;
@@ -6,5 +8,6 @@
 #control-panel {
   width: 100%;
   height: 100%;
-  background-color: grey;
+  background-color: var(--color-fg);
+  overflow: hidden; /* stops the text margins from moving the div down */
 }

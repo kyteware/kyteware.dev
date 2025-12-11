@@ -1,0 +1,14 @@
+:root {
+  --color-bg: #030207;
+  --color-fg: #120F21;
+  
+  --color-primary: #51487A;
+
+  --color-secondary-light: #756240;
+  --color-secondary: #2F2512;
+  --color-secondary-dark: #0C0802;
+  
+  --color-trinary-light: #757440;
+  --color-trinary: #2F2F12;
+  --color-trinary-dark: #0C0C02;
+}
