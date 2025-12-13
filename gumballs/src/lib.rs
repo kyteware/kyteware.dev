@@ -77,9 +77,6 @@ pub struct DroppingBall {
 #[derive(Component)]
 pub struct FinishedBall;
 
-#[derive(Component)]
-pub struct MyButton;
-
 impl BallCategory {
     fn mesh() -> impl Into<Mesh> {
         return Sphere::new(BALL_RAD);
