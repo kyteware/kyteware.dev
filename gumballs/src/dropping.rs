@@ -1,7 +1,7 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
-use crate::{js_bindings, Ball, DroppingBall, FinishedBall, VisState, BALL_RAD, FAKE_GRAVITY, FINAL_BALL_LANDING_COORDS, FLOOR_Y_BOTTOM, HIDDEN_BALL_CHAMBER_COORDS};
+use crate::{js_bindings, AvailableBall, Ball, DroppingBall, FinishedBall, VisState, BALL_RAD, FAKE_GRAVITY, FINAL_BALL_LANDING_COORDS, FLOOR_Y_BOTTOM, HIDDEN_BALL_CHAMBER_COORDS};
 
 pub fn dropping_plugin(app: &mut App) {
     app.add_systems(
@@ -10,6 +10,7 @@ pub fn dropping_plugin(app: &mut App) {
             (move_dropping_ball, start_rolling_into_slot).chain(),
             finish_rolling_into_slot
         ).run_if(in_state(VisState::Dropping)));
+    app.add_systems(OnEnter(VisState::Dropping), jolt_all_balls);
 }
 
 // physics engine doesn't let us selectively disable collisions for one object, so we must 
@@ -40,5 +41,11 @@ fn finish_rolling_into_slot(query: Query<(&Ball, &Transform), With<FinishedBall>
             info!("done rolling!");
             js_bindings::doneDropping(ball.id);
         }
+    }
+}
+
+fn jolt_all_balls(mut query: Query<&mut LinearVelocity, With<AvailableBall>>) {
+    for mut vel in &mut query {
+        vel.0.y += 0.1;
     }
 }
