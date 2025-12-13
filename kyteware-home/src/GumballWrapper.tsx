@@ -65,7 +65,7 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
 
     return (
         <div id="gumball-wrapper">
-            <canvas id="gumball-canvas"/>
+            <canvas id="gumball-canvas" tabIndex={-1}/>
         </div>
     )
 }

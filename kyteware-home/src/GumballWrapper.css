@@ -1,4 +1,7 @@
 #gumball-canvas {
   aspect-ratio: 1 / 2; 
   /* doesnt work ^^^ grrr */
+
+  pointer-events: none;
+  outline: none;
 }
