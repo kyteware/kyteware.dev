@@ -63,9 +63,14 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
         wasm.discard_gumball();
     }, [ejectTrigger]);
 
+    // prayers \o/
     return (
-        <div id="gumball-wrapper">
-            <canvas id="gumball-canvas" tabIndex={-1}/>
+        <div id="gumball-container">
+            <div className="square-constraint">
+                <div id="gumball-wrapper">
+                    <canvas id="gumball-canvas" tabIndex={-1}/>
+                </div>
+            </div>
         </div>
     )
 }
