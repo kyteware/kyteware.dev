@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use bevy::prelude::*;
 use avian3d::prelude::*;
 
-use crate::{js_bindings, AvailableBall, BallCategory, MachineLight, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, MACHINE_LIGHT_RANGE, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
+use crate::{js_bindings::{self, done_loading}, AvailableBall, BallCategory, MachineLight, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, MACHINE_LIGHT_RANGE, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
 
 #[derive(Resource)]
 struct LoadingData {
@@ -33,10 +33,11 @@ pub fn loader_plugin(app: &mut App) {
     app.add_observer(on_gumballs_available);
     app.add_systems(Update, (
         start_if_done,
+        report_progress
     ).run_if(in_state(VisState::Loading)));
     app.add_systems(
         OnExit(VisState::Loading),
-        (add_ball_physics, add_machine_physics)
+        (add_ball_physics, add_machine_physics, done_loading)
     );
 }
 
@@ -200,5 +201,22 @@ fn add_ball_physics(mut commands: Commands, query: Query<Entity, With<AvailableB
             Collider::sphere(BALL_RAD),
             Friction::new(0.05)
         ));
+    }
+}
+
+fn report_progress(loading_data: Res<LoadingData>, asset_server: Res<AssetServer>) {
+    if loading_data.is_added() || loading_data.is_changed() {
+        let num_loaded = loading_data.assets_to_load
+            .iter()
+            .filter(|x| asset_server.is_loaded(*x))
+            .count();
+        let total_assets = loading_data.assets_to_load.len();
+        let balls_loaded = loading_data.balls_loaded;
+
+        let progress_str = format!(
+            "Assets loaded: {num_loaded}/{total_assets}\nBalls loaded: {balls_loaded}\n"
+        );
+
+        js_bindings::loading_progress(progress_str);
     }
 }

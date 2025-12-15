@@ -12,17 +12,30 @@ interface GumballWrapperProps {
 
 export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
+    const [loadingState, setLoadingState] = useState<string | null>("WASM loading");
 
     const doneDroppingCallback = useCallback((id: number) => {
         setLastDropped(id);
     }, [setLastDropped]);
 
+    const loadingProgress = (progress: string) => {
+        setLoadingState(progress);
+    }
+
+    const doneLoading = () => {
+        setLoadingState(null);
+    }
+
     // register dropped callback
     useEffect(() => {
         (window as any).doneDropping = doneDroppingCallback;
+        (window as any).loadingProgress = loadingProgress;
+        (window as any).doneLoading = doneLoading;
 
         return () => {
-        (window as any).doneDropping = undefined;
+            (window as any).doneDropping = undefined;
+            (window as any).loadingProgress = undefined;
+            (window as any).doneLoading = undefined;
         }
     }, [doneDroppingCallback]);
 
@@ -63,14 +76,28 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
         wasm.discard_gumball();
     }, [ejectTrigger]);
 
+    const is_loading = loadingState !== null;
+
     // prayers \o/
     return (
         <div id="gumball-container">
             <div className="square-constraint">
                 <div id="gumball-wrapper">
-                    <canvas id="gumball-canvas" tabIndex={-1}/>
+                    <canvas id="gumball-canvas" style={is_loading ? { display: "none" } : {}} tabIndex={-1}/>
                 </div>
             </div>
+
+            <LoadingDisplayMaybe loadingState={loadingState}/>
         </div>
     )
+}
+
+function LoadingDisplayMaybe({ loadingState }: { loadingState: string | null }) {
+    return loadingState === null 
+        ? <></> 
+        : (
+            <div className="loading_cover">
+                <p>{loadingState}</p>
+            </div>
+        )
 }

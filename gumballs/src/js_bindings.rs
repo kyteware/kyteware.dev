@@ -15,6 +15,9 @@ extern "C" {
     /// send loading progress
     #[wasm_bindgen(js_name = loadingProgress)]
     pub fn loading_progress(progress: String);
+    /// signal loading finished
+    #[wasm_bindgen(js_name = doneLoading)]
+    pub fn done_loading();
     /// relays information about which ball fell
     #[wasm_bindgen(js_name = doneDropping)]
     pub fn done_dropping(id: u32);
