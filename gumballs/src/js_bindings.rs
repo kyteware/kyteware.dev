@@ -12,8 +12,12 @@ static GUMBALL_DISCARD_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDiscard>
 
 #[wasm_bindgen]
 extern "C" {
+    /// send loading progress
+    #[wasm_bindgen(js_name = loadingProgress)]
+    pub fn loading_progress(progress: String);
     /// relays information about which ball fell
-    pub fn doneDropping(id: u32);
+    #[wasm_bindgen(js_name = doneDropping)]
+    pub fn done_dropping(id: u32);
 }
 
 #[derive(Event)]

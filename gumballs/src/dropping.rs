@@ -39,7 +39,7 @@ fn finish_rolling_into_slot(query: Query<(&Ball, &Transform), With<FinishedBall>
         if transform.translation.distance_squared(FINAL_BALL_LANDING_COORDS) < (BALL_RAD / 3.).powi(2) {
             *next_state = NextState::Pending(VisState::Waiting);
             info!("done rolling!");
-            js_bindings::doneDropping(ball.id);
+            js_bindings::done_dropping(ball.id);
         }
     }
 }
