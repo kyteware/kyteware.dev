@@ -96,8 +96,13 @@ function LoadingDisplayMaybe({ loadingState }: { loadingState: string | null }) 
     return loadingState === null 
         ? <></> 
         : (
-            <div className="loading_cover">
-                <p>{loadingState}</p>
+            <div className="loading-cover">
+                <div className="progress-container">
+                    {loadingState.split("\n").map((line, index) => <p key={index}>{line}</p>)}
+                </div>
+                <p className="technical-credits">
+                    Implemented with Bevy in Rust, ported with wasm-bindgen ♥️
+                </p>
             </div>
         )
 }

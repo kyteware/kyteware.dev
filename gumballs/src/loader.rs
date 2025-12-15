@@ -37,7 +37,7 @@ pub fn loader_plugin(app: &mut App) {
     ).run_if(in_state(VisState::Loading)));
     app.add_systems(
         OnExit(VisState::Loading),
-        (add_ball_physics, add_machine_physics, done_loading)
+        (add_ball_physics, add_machine_physics)
     );
 }
 
@@ -128,17 +128,25 @@ fn setup_scene(
 fn setup_ball_assets(
     mut commands: Commands,
     mut mesh_assets: ResMut<Assets<Mesh>>, 
-    mut material_assets: ResMut<Assets<StandardMaterial>>
+    mut material_assets: ResMut<Assets<StandardMaterial>>,
+    mut loading_data: ResMut<LoadingData>
 ) {
     use BallCategory::*;
+
+    let ball_mesh = mesh_assets.add(BallCategory::mesh());
+    let ball_materials: HashMap<BallCategory, Handle<StandardMaterial>>  = [
+        (PersonalProject, material_assets.add(PersonalProject.material())),
+        (Event, material_assets.add(Event.material())),
+        (Experience, material_assets.add(Experience.material())),
+        (Tidbit, material_assets.add(Tidbit.material()))
+    ].into();
+
+    loading_data.assets_to_load.push(ball_mesh.clone().untyped());
+    ball_materials.values().for_each(|handle| {loading_data.assets_to_load.push(handle.clone().untyped())});
+
     commands.insert_resource(BallAssets {
-        ball_mesh: mesh_assets.add(BallCategory::mesh()),
-        ball_materials: [
-            (PersonalProject, material_assets.add(PersonalProject.material())),
-            (Event, material_assets.add(Event.material())),
-            (Experience, material_assets.add(Experience.material())),
-            (Tidbit, material_assets.add(Tidbit.material()))
-        ].into()
+        ball_mesh,
+        ball_materials
     });
 }
 
