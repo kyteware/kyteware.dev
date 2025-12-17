@@ -1,4 +1,4 @@
-@import url("./colors.css");
+@import url("./common.css");
 
 #gumball-canvas {
   pointer-events: none;

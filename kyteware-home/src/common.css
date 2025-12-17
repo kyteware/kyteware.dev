@@ -7,6 +7,24 @@
 }
 
 :root {
+  --color-bg: #030207;
+  --color-fg: #232226;
+
+  --color-text: #d0d0d1;
+  --color-text-darker: #b0b0b2;
+  
+  --color-primary: #2c1584;
+  --color-primary-light: #8b75e4;
+  --color-primary-dark: #18171d; 
+
+  --color-secondary: #e2826a;
+  --color-secondary-dark: #1c100d;
+
+  --standard-border-width: 1px;
+  --standard-border-radius: 5px;
+}
+
+:root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.2;
   font-weight: 300;
