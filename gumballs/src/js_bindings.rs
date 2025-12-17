@@ -1,14 +1,16 @@
 use std::sync::RwLock;
 
+use bevy::prelude::*;
 use bevy_channel_trigger::{ChannelSender, ChannelTriggerApp};
 use wasm_bindgen::prelude::*;
-use bevy::prelude::*;
 
 use crate::Ball;
 
-static GUMBALLS_AVAILABLE_EVENT_SENDER: RwLock<Option<ChannelSender<GumballsAvailable>>> = RwLock::new(None);
+static GUMBALLS_AVAILABLE_EVENT_SENDER: RwLock<Option<ChannelSender<GumballsAvailable>>> =
+    RwLock::new(None);
 static GUMBALL_DROP_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDrop>>> = RwLock::new(None);
-static GUMBALL_DISCARD_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDiscard>>> = RwLock::new(None);
+static GUMBALL_DISCARD_EVENT_SENDER: RwLock<Option<ChannelSender<GumballDiscard>>> =
+    RwLock::new(None);
 
 #[wasm_bindgen]
 extern "C" {
@@ -45,7 +47,8 @@ pub fn js_binding_plugin(app: &mut App) {
 #[wasm_bindgen]
 pub fn gumballs_available(raw_gumballs: JsValue) -> Result<(), JsValue> {
     let gumballs: Vec<Ball> = serde_wasm_bindgen::from_value(raw_gumballs)?;
-    GUMBALLS_AVAILABLE_EVENT_SENDER.read()
+    GUMBALLS_AVAILABLE_EVENT_SENDER
+        .read()
         .unwrap()
         .as_ref()
         .unwrap()
@@ -56,7 +59,8 @@ pub fn gumballs_available(raw_gumballs: JsValue) -> Result<(), JsValue> {
 
 #[wasm_bindgen]
 pub fn drop_gumball() {
-    GUMBALL_DROP_EVENT_SENDER.read()
+    GUMBALL_DROP_EVENT_SENDER
+        .read()
         .unwrap()
         .as_ref()
         .unwrap()
@@ -65,7 +69,8 @@ pub fn drop_gumball() {
 
 #[wasm_bindgen]
 pub fn discard_gumball() {
-    GUMBALL_DISCARD_EVENT_SENDER.read()
+    GUMBALL_DISCARD_EVENT_SENDER
+        .read()
         .unwrap()
         .as_ref()
         .unwrap()

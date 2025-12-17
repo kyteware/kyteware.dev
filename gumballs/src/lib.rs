@@ -1,20 +1,20 @@
 mod dropping;
-mod loader;
-mod waiting;
-mod run;
-mod machine_lights;
 pub mod js_bindings;
+mod loader;
+mod machine_lights;
+mod run;
+mod waiting;
 
 use std::sync::LazyLock;
 
 use bevy::prelude::*;
 
-pub use run::run;
 pub use dropping::*;
 pub use loader::*;
+pub use machine_lights::*;
+pub use run::run;
 use serde::Deserialize;
 pub use waiting::*;
-pub use machine_lights::*;
 
 pub const BALL_RAD: f32 = 0.29;
 pub const FAKE_GRAVITY: f32 = -9.81 / 20.;
@@ -31,10 +31,7 @@ pub const SPOTLIGHT_INNER_ANGLE: f32 = f32::to_radians(10.);
 pub const SPOTLIGHT_OUTER_ANGLE: f32 = f32::to_radians(18.);
 pub const SPOTLIGHT_INTENSITY: f32 = 1_200_000.;
 
-pub const MACHINE_LIGHT_POSITIONS: [Vec3; 2] = [
-    Vec3::new(0.7, 5.5, 0.),
-    Vec3::new(-0.7, 5.5, 0.),
-];
+pub const MACHINE_LIGHT_POSITIONS: [Vec3; 2] = [Vec3::new(0.7, 5.5, 0.), Vec3::new(-0.7, 5.5, 0.)];
 pub const MACHINE_LIGHT_INTENSITY: f32 = 100_000.;
 pub const MACHINE_LIGHT_AVG_TIME_ON: f64 = 7.;
 pub const MACHINE_LIGHT_AVG_TIME_OFF: f64 = 0.1;
@@ -43,19 +40,21 @@ pub const MACHINE_LIGHT_RANGE: f32 = 5.;
 pub const AMBIENT_BRIGHTNESS: f32 = 100.;
 pub const AMBIENT_COLOR: Color = Color::srgb_u8(36, 27, 60);
 
-pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| Transform::from_xyz(20.7, 8.5, 9.4).looking_at(Vec3::new(0., 1.5, 0.), Vec3::Y) );
+pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| {
+    Transform::from_xyz(20.7, 8.5, 9.4).looking_at(Vec3::new(0., 1.5, 0.), Vec3::Y)
+});
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum VisState {
     Loading,
     Waiting,
-    Dropping
+    Dropping,
 }
 
 #[derive(Debug, Component, Clone, Deserialize)]
 pub struct Ball {
     pub id: u32,
-    pub category: BallCategory
+    pub category: BallCategory,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Deserialize)]
@@ -63,7 +62,7 @@ pub enum BallCategory {
     PersonalProject,
     Event,
     Experience,
-    Tidbit
+    Tidbit,
 }
 
 #[derive(Component)]
@@ -71,7 +70,7 @@ pub struct AvailableBall;
 
 #[derive(Component, Default)]
 pub struct DroppingBall {
-    pub velocity: f32
+    pub velocity: f32,
 }
 
 #[derive(Component)]

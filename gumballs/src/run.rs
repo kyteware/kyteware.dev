@@ -2,7 +2,10 @@ use avian3d::PhysicsPlugins;
 use bevy::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use crate::{dropping_plugin, js_bindings::js_binding_plugin, loader_plugin, machine_lights_plugin, waiting_plugin, VisState};
+use crate::{
+    VisState, dropping_plugin, js_bindings::js_binding_plugin, loader_plugin,
+    machine_lights_plugin, waiting_plugin,
+};
 
 #[wasm_bindgen]
 pub fn run() {
