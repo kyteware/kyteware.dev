@@ -1,14 +1,14 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, time::Duration};
 
-use bevy::prelude::*;
+use bevy::{prelude::*, time::common_conditions::on_timer};
 use avian3d::prelude::*;
 
-use crate::{js_bindings::{self, done_loading}, AvailableBall, BallCategory, MachineLight, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, MACHINE_LIGHT_RANGE, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
+use crate::{js_bindings, AvailableBall, BallCategory, MachineLight, VisState, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BALL_RAD, CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, MACHINE_LIGHT_RANGE, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS};
 
 #[derive(Resource)]
 struct LoadingData {
     assets_to_load: Vec<UntypedHandle>,
-    balls_loaded: bool
+    facts_loaded: bool
 }
 
 #[derive(Resource)]
@@ -18,7 +18,7 @@ struct BallAssets {
 }
 
 pub fn loader_plugin(app: &mut App) {
-    app.insert_resource(LoadingData { assets_to_load: vec![], balls_loaded: false });
+    app.insert_resource(LoadingData { assets_to_load: vec![], facts_loaded: false });
     app.add_systems(
         Startup, 
         (
@@ -30,14 +30,14 @@ pub fn loader_plugin(app: &mut App) {
             setup_machine_lights
         )
     );
-    app.add_observer(on_gumballs_available);
+    app.add_observer(on_gumball_info_available);
     app.add_systems(Update, (
         start_if_done,
-        report_progress
+        report_progress.run_if(on_timer(Duration::from_millis(100)))
     ).run_if(in_state(VisState::Loading)));
     app.add_systems(
         OnExit(VisState::Loading),
-        (add_ball_physics, add_machine_physics)
+        (add_ball_physics, add_machine_physics, js_bindings::done_loading)
     );
 }
 
@@ -134,15 +134,12 @@ fn setup_ball_assets(
     use BallCategory::*;
 
     let ball_mesh = mesh_assets.add(BallCategory::mesh());
-    let ball_materials: HashMap<BallCategory, Handle<StandardMaterial>>  = [
+    let ball_materials = [
         (PersonalProject, material_assets.add(PersonalProject.material())),
         (Event, material_assets.add(Event.material())),
         (Experience, material_assets.add(Experience.material())),
         (Tidbit, material_assets.add(Tidbit.material()))
     ].into();
-
-    loading_data.assets_to_load.push(ball_mesh.clone().untyped());
-    ball_materials.values().for_each(|handle| {loading_data.assets_to_load.push(handle.clone().untyped())});
 
     commands.insert_resource(BallAssets {
         ball_mesh,
@@ -150,7 +147,7 @@ fn setup_ball_assets(
     });
 }
 
-fn on_gumballs_available(
+fn on_gumball_info_available(
     available: On<js_bindings::GumballsAvailable>,
     mut commands: Commands, 
     mut loading_data: ResMut<LoadingData>,
@@ -166,11 +163,11 @@ fn on_gumballs_available(
         ));
     }
 
-    loading_data.balls_loaded = true;
+    loading_data.facts_loaded = true;
 }
 
 fn start_if_done(mut next_state: ResMut<NextState<VisState>>, asset_server: Res<AssetServer>, loading_data: Res<LoadingData>) {
-    if !loading_data.balls_loaded {
+    if !loading_data.facts_loaded {
         return;
     }
     
@@ -213,18 +210,16 @@ fn add_ball_physics(mut commands: Commands, query: Query<Entity, With<AvailableB
 }
 
 fn report_progress(loading_data: Res<LoadingData>, asset_server: Res<AssetServer>) {
-    if loading_data.is_added() || loading_data.is_changed() {
-        let num_loaded = loading_data.assets_to_load
-            .iter()
-            .filter(|x| asset_server.is_loaded(*x))
-            .count();
-        let total_assets = loading_data.assets_to_load.len();
-        let balls_loaded = loading_data.balls_loaded;
+    let num_loaded = loading_data.assets_to_load
+        .iter()
+        .filter(|x| asset_server.is_loaded(*x))
+        .count();
+    let total_assets = loading_data.assets_to_load.len();
+    let balls_loaded = loading_data.facts_loaded;
 
-        let progress_str = format!(
-            "Assets loaded: {num_loaded}/{total_assets}\nBalls loaded: {balls_loaded}\n"
-        );
+    let progress_str = format!(
+        "Assets loaded: {num_loaded}/{total_assets}\nBalls loaded: {balls_loaded}\n"
+    );
 
-        js_bindings::loading_progress(progress_str);
-    }
+    js_bindings::loading_progress(progress_str);
 }
