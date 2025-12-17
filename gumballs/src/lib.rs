@@ -78,7 +78,7 @@ pub struct FinishedBall;
 
 impl BallCategory {
     fn mesh() -> impl Into<Mesh> {
-        return Sphere::new(BALL_RAD);
+        Sphere::new(BALL_RAD)
     }
 
     fn material(self) -> impl Into<StandardMaterial> {
