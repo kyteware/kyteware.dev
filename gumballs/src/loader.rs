@@ -242,7 +242,7 @@ fn report_progress(loading_data: Res<LoadingData>, asset_server: Res<AssetServer
     let balls_loaded = loading_data.facts_loaded;
 
     let progress_str =
-        format!("Assets loaded: {num_loaded}/{total_assets}\nBalls loaded: {balls_loaded}\n");
+        format!("WASM loading\nAssets loaded: {num_loaded}/{total_assets}\nBalls loaded: {balls_loaded}\n");
 
     js_bindings::loading_progress(progress_str);
 }
