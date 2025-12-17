@@ -3,6 +3,7 @@ import './App.css'
 import Controls from './Controls'
 import GumballWrapper from './GumballWrapper'
 import { Gumballs } from './model';
+import Headerbar from './Headerbar';
 
 export default function App() {
     const [gumballs, setGumballs] = useState<Gumballs | null>(null);
@@ -34,9 +35,7 @@ export default function App() {
 
     return (
         <div id="siteLayout">
-            <div id="headerbar">
-                <p>headerbar</p>
-            </div>
+            <Headerbar/>
             <Controls gumballs={gumballs} triggerDrop={triggerDrop} triggerEject={triggerEject} lastDropped={lastDropped}/>
             <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} ejectTrigger={ejectTrigger} setLastDropped={setLastDropped}/>
         </div>
