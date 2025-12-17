@@ -2,7 +2,7 @@
 @import url("common.css");
 
 #controls {
-  padding: 20px;
+  padding: 30px;
   display: flex;
 
   flex-direction: column;
