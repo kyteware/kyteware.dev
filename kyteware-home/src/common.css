@@ -1,5 +1,3 @@
-@import url("colors.css");
-
 *,
 *::before,
 *::after {
@@ -20,7 +18,7 @@
   --color-secondary: #e2826a;
   --color-secondary-dark: #1c100d;
 
-  --standard-border-width: 1px;
+  --standard-border-width: 1.5px;
   --standard-border-radius: 5px;
 }
 
