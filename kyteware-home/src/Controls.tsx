@@ -1,6 +1,7 @@
 import { useEffect, useState, type JSX } from "react";
 import type { Gumballs } from "./data";
 import './Controls.css';
+import Markdown from "react-markdown";
 
 interface ControlsProps {
     gumballs: Gumballs | null,
@@ -51,9 +52,7 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
     } else if (stage === Stage.FACT_DISPLAYED) {
         const fact = gumballs!.find(lastDropped!);
         inner = (<>
-            <h5>{fact.category}</h5>
-            <h3>{fact.name}</h3>
-            <p>description: {fact.description}</p>
+            <Markdown>{fact.content}</Markdown>
         </>);
         buttonOnClick = handleNextPressed;
         buttonText = "Discard";
