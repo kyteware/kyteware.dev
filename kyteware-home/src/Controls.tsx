@@ -16,10 +16,12 @@ enum Stage {
     READY = "READY",
     DROPPING = "DROPPING",
     FACT_DISPLAYED = "FACT_DISPLAYED",
+    DONE = "DONE"
 }
 
 export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped, loadingState }: ControlsProps) {
     const [stage, setStage] = useState(Stage.LOADING);
+    const [numDropped, setNumDropped] = useState(0);
 
     // must be in here for change detection
     useEffect(() => {
@@ -32,11 +34,13 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
         case Stage.LOADING:
             return <LoadingStage setStage={setStage} loadingState={loadingState}/>
         case Stage.READY:
-            return <ReadyStage setStage={setStage} triggerDrop={triggerDrop}/>
+            return <ReadyStage setStage={setStage} triggerDrop={triggerDrop} setNumDropped={setNumDropped}/>
         case Stage.DROPPING:
             return <DroppingStage/>
         case Stage.FACT_DISPLAYED:
-            return <FactDisplayedStage setStage={setStage} gumballs={gumballs} lastDropped={lastDropped} triggerEject={triggerEject}/>
+            return <FactDisplayedStage setStage={setStage} gumballs={gumballs} lastDropped={lastDropped} triggerEject={triggerEject} numDropped={numDropped}/>
+        case Stage.DONE:
+            return <DoneStage/>
         default:
             console.error("UNKNOWN STAGE AHHH")
             break;
@@ -85,15 +89,17 @@ function LoadingStage({ setStage, loadingState }: LoadingStageData) {
 interface ReadyStageData {
     setStage: (s: Stage) => void,
     triggerDrop: React.Dispatch<React.SetStateAction<number>>
+    setNumDropped: React.Dispatch<React.SetStateAction<number>>
 }
 
-function ReadyStage({ setStage, triggerDrop }: ReadyStageData) {
+function ReadyStage({ setStage, triggerDrop, setNumDropped }: ReadyStageData) {
     return formatControls(
         formatMessage("Ready to drop!"),
         "Drop",
         false,
         () => {
-            triggerDrop((old) => old + 1);
+            setNumDropped((old) => old + 1); // wait a minute...
+            triggerDrop((old) => old + 1); // i think this might be redundant guys
             setStage(Stage.DROPPING)
         }
     )
@@ -114,9 +120,10 @@ interface FactDisplayedStageData {
     gumballs: Gumballs | null,
     lastDropped: number | null
     triggerEject: React.Dispatch<React.SetStateAction<number>>,
+    numDropped: number
 }
 
-function FactDisplayedStage({ setStage, gumballs, lastDropped, triggerEject }: FactDisplayedStageData) {
+function FactDisplayedStage({ setStage, gumballs, lastDropped, triggerEject, numDropped }: FactDisplayedStageData) {
     const toDisplay = gumballs!.find(lastDropped!);
     return formatControls(
         <Markdown>{toDisplay.content}</Markdown>,
@@ -124,7 +131,20 @@ function FactDisplayedStage({ setStage, gumballs, lastDropped, triggerEject }: F
         false,
         () => {
             triggerEject((old) => old + 1);
-            setStage(Stage.READY);
+            if (gumballs!.gumballs.length > numDropped) {
+                setStage(Stage.READY);
+            } else {
+                setStage(Stage.DONE);
+            }
         }
+    )
+}
+
+function DoneStage() {
+    return formatControls(
+        formatMessage("No more gumballs!"),
+        "Drop",
+        true,
+        () => {}
     )
 }
