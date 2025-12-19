@@ -56,6 +56,12 @@ function formatControls(content: ReactNode, buttonText: string, buttonDisabled: 
     </div>;
 }
 
+function formatMessage(text: string) {
+    return <div className="controlMessageContainer">
+        <p>{text}</p>
+    </div>
+}
+
 interface LoadingStageData {
     setStage: (s: Stage) => void,
     loadingState: string | null
@@ -69,7 +75,7 @@ function LoadingStage({ setStage, loadingState }: LoadingStageData) {
     }, [loadingState]);
 
     return formatControls(
-        <p>loading</p>,
+        formatMessage("Loading..."),
         "Drop",
         true,
         () => {}
@@ -83,7 +89,7 @@ interface ReadyStageData {
 
 function ReadyStage({ setStage, triggerDrop }: ReadyStageData) {
     return formatControls(
-        <p>ready</p>,
+        formatMessage("Ready to drop!"),
         "Drop",
         false,
         () => {
@@ -96,7 +102,7 @@ function ReadyStage({ setStage, triggerDrop }: ReadyStageData) {
 
 function DroppingStage() {
     return formatControls(
-        <p>dropping</p>,
+        formatMessage("Dropping..."),
         "Dropping...",
         true,
         () => {}
