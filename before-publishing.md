@@ -1,6 +1,6 @@
 - [ ] Fonts (including making descriptions look good)
 - [ ] Make headerbar not ridiculous
-- [ ] Make controls look good
+- [x] Make controls look good
 - [x] Cleanup controls code
 - [x] Only let user control after loading
 - [ ] Check if we finished all balls
