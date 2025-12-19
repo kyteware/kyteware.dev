@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css'
 import Controls from './Controls'
 import GumballWrapper from './GumballWrapper'
-import { Gumballs } from './model';
+import { Gumballs } from './data';
 import Headerbar from './Headerbar';
 
 export default function App() {

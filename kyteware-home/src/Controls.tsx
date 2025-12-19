@@ -1,5 +1,5 @@
 import { useEffect, useState, type JSX } from "react";
-import type { Gumballs } from "./model";
+import type { Gumballs } from "./data";
 import './Controls.css';
 
 interface ControlsProps {
