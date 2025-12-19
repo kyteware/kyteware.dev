@@ -1,10 +1,12 @@
 - [ ] Fonts (including making descriptions look good)
 - [ ] Make headerbar not ridiculous
+- [ ] Make controls look good
 - [x] Cleanup controls code
-- [ ] Only let user control after loading
+- [x] Only let user control after loading
 - [ ] Check if we finished all balls
 - [ ] Make balls drop properly
 - [ ] Prioritize certain balls
 - [ ] Make writups for all balls
 - [ ] Make model better
+- [ ] Make ball drops look good
 - [ ] Add formatting for mobile
