@@ -6,6 +6,7 @@ import { Gumballs } from './data';
 import Headerbar from './Headerbar';
 
 export default function App() {
+    const [loadingState, setLoadingState] = useState<string | null>("WASM loading");
     const [dropTrigger, triggerDrop] = useState(0);
     const [ejectTrigger, triggerEject] = useState(0);
     const [lastDropped, setLastDropped] = useState<number | null>(null);
@@ -15,8 +16,8 @@ export default function App() {
     return (
         <div id="siteLayout">
             <Headerbar/>
-            <Controls gumballs={gumballs} triggerDrop={triggerDrop} triggerEject={triggerEject} lastDropped={lastDropped}/>
-            <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} ejectTrigger={ejectTrigger} setLastDropped={setLastDropped}/>
+            <Controls gumballs={gumballs} triggerDrop={triggerDrop} triggerEject={triggerEject} lastDropped={lastDropped} loadingState={loadingState}/>
+            <GumballWrapper gumballs={gumballs} dropTrigger={dropTrigger} ejectTrigger={ejectTrigger} setLastDropped={setLastDropped} loadingState={loadingState} setLoadingState={setLoadingState}/>
         </div>
     )
 }

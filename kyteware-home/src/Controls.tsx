@@ -7,17 +7,19 @@ interface ControlsProps {
     gumballs: Gumballs | null,
     triggerDrop: React.Dispatch<React.SetStateAction<number>>,
     triggerEject: React.Dispatch<React.SetStateAction<number>>,
-    lastDropped: number | null
+    lastDropped: number | null,
+    loadingState: string | null
 }
 
 enum Stage {
+    LOADING = "LOADING",
     READY = "READY",
     DROPPING = "DROPPING",
     FACT_DISPLAYED = "FACT_DISPLAYED",
 }
 
-export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped }: ControlsProps) {
-    const [stage, setStage] = useState(Stage.READY);
+export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped, loadingState }: ControlsProps) {
+    const [stage, setStage] = useState(Stage.LOADING);
 
     // must be in here for change detection
     useEffect(() => {
@@ -27,6 +29,8 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
     }, [lastDropped]);
 
     switch (stage) {
+        case Stage.LOADING:
+            return <LoadingStage setStage={setStage} loadingState={loadingState}/>
         case Stage.READY:
             return <ReadyStage setStage={setStage} triggerDrop={triggerDrop}/>
         case Stage.DROPPING:
@@ -50,6 +54,26 @@ function formatControls(content: ReactNode, buttonText: string, buttonDisabled: 
             </button>
         </div>
     </div>;
+}
+
+interface LoadingStageData {
+    setStage: (s: Stage) => void,
+    loadingState: string | null
+}
+
+function LoadingStage({ setStage, loadingState }: LoadingStageData) {
+    useEffect(() => {
+        if (loadingState === null) {
+            setStage(Stage.READY);
+        }
+    }, [loadingState]);
+
+    return formatControls(
+        <p>loading</p>,
+        "Drop",
+        true,
+        () => {}
+    )
 }
 
 interface ReadyStageData {

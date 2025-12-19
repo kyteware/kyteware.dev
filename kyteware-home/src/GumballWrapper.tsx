@@ -8,11 +8,12 @@ interface GumballWrapperProps {
     dropTrigger: number,
     ejectTrigger: number,
     setLastDropped: (id: number) => void,
+    loadingState: string | null,
+    setLoadingState: (running: string | null) => void
 }
 
-export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped }: GumballWrapperProps) {
+export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped, loadingState, setLoadingState }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
-    const [loadingState, setLoadingState] = useState<string | null>("WASM loading");
 
     const doneDroppingCallback = useCallback((id: number) => {
         setLastDropped(id);
