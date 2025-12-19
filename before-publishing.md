@@ -1,0 +1,8 @@
+- [ ] Fonts (including making descriptions look good)
+- [ ] Make headerbar not ridiculous
+- [ ] Check if we finished all balls
+- [ ] Make balls drop properly
+- [ ] Prioritize certain balls
+- [ ] Make writups for all balls
+- [ ] Make model better
+- [ ] Add formatting for mobile
