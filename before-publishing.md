@@ -1,5 +1,7 @@
 - [ ] Fonts (including making descriptions look good)
 - [ ] Make headerbar not ridiculous
+- [x] Cleanup controls code
+- [ ] Only let user control after loading
 - [ ] Check if we finished all balls
 - [ ] Make balls drop properly
 - [ ] Prioritize certain balls

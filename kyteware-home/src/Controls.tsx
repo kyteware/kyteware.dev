@@ -1,4 +1,4 @@
-import { useEffect, useState, type JSX } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { Gumballs } from "./data";
 import './Controls.css';
 import Markdown from "react-markdown";
@@ -19,53 +19,82 @@ enum Stage {
 export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped }: ControlsProps) {
     const [stage, setStage] = useState(Stage.READY);
 
-    let handleDropPressed = () => {
-        triggerDrop((old) => old + 1);
-        setStage(Stage.DROPPING);
-    }
-
+    // must be in here for change detection
     useEffect(() => {
         if (lastDropped !== null) {
             setStage(Stage.FACT_DISPLAYED);
         }
     }, [lastDropped]);
 
-    let handleNextPressed = () => {
-        triggerEject((old) => old + 1)
-        setStage(Stage.READY);
+    switch (stage) {
+        case Stage.READY:
+            return <ReadyStage setStage={setStage} triggerDrop={triggerDrop}/>
+        case Stage.DROPPING:
+            return <DroppingStage/>
+        case Stage.FACT_DISPLAYED:
+            return <FactDisplayedStage setStage={setStage} gumballs={gumballs} lastDropped={lastDropped} triggerEject={triggerEject}/>
+        default:
+            console.error("UNKNOWN STAGE AHHH")
+            break;
     }
+}
 
-    let inner: JSX.Element = <></>;
-    let buttonText = "";
-    let buttonOnClick = () => {};
-    let buttonDisabled = false;
-
-    if (stage === Stage.READY) {
-        inner = <p>ready</p>;
-        buttonText = "Drop";
-        buttonOnClick = handleDropPressed;
-    } else if (stage === Stage.DROPPING) {
-        inner = <p>waiting to be finished dropping</p>;
-        buttonText = "Dropping..."
-        buttonOnClick = () => {};
-        buttonDisabled = true;
-    } else if (stage === Stage.FACT_DISPLAYED) {
-        const fact = gumballs!.find(lastDropped!);
-        inner = (<>
-            <Markdown>{fact.content}</Markdown>
-        </>);
-        buttonOnClick = handleNextPressed;
-        buttonText = "Discard";
-    }
-
-    return (
-        <div id="controls">
-            <div id="control-panel">
-                <div className="controlsInner">
-                    {inner}
-                </div>
-                <button onClick={buttonOnClick} className={"controlButton " + (buttonDisabled ? "buttonDisabled" : "")}>{buttonText}</button>
+function formatControls(content: ReactNode, buttonText: string, buttonDisabled: boolean, onClick: () => void) {
+    return <div id="controls">
+        <div id="control-panel">
+            <div className="controlsInner">
+                {content}
             </div>
+            <button className={"controlButton " + (buttonDisabled ? "buttonDisabled" : "")} onClick={onClick}>
+                {buttonText}        
+            </button>
         </div>
-    );
+    </div>;
+}
+
+interface ReadyStageData {
+    setStage: (s: Stage) => void,
+    triggerDrop: React.Dispatch<React.SetStateAction<number>>
+}
+
+function ReadyStage({ setStage, triggerDrop }: ReadyStageData) {
+    return formatControls(
+        <p>ready</p>,
+        "Drop",
+        false,
+        () => {
+            triggerDrop((old) => old + 1);
+            setStage(Stage.DROPPING)
+        }
+    )
+}
+
+
+function DroppingStage() {
+    return formatControls(
+        <p>dropping</p>,
+        "Dropping...",
+        true,
+        () => {}
+    )
+}
+
+interface FactDisplayedStageData {
+    setStage: (s: Stage) => void,
+    gumballs: Gumballs | null,
+    lastDropped: number | null
+    triggerEject: React.Dispatch<React.SetStateAction<number>>,
+}
+
+function FactDisplayedStage({ setStage, gumballs, lastDropped, triggerEject }: FactDisplayedStageData) {
+    const toDisplay = gumballs!.find(lastDropped!);
+    return formatControls(
+        <Markdown>{toDisplay.content}</Markdown>,
+        "Discard",
+        false,
+        () => {
+            triggerEject((old) => old + 1);
+            setStage(Stage.READY);
+        }
+    )
 }
