@@ -1,5 +1,6 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
+use rand::{rng, Rng};
 
 use crate::{
     AvailableBall, DroppingBall, FinishedBall, GUMBALL_EJECT_VELOCITY, VisState, js_bindings,
@@ -36,7 +37,7 @@ fn eject_finished_balls(
     query: Query<(Entity, &mut LinearVelocity), With<FinishedBall>>,
 ) {
     for (entity, mut vel) in query {
-        vel.0 = GUMBALL_EJECT_VELOCITY;
+        vel.0 = GUMBALL_EJECT_VELOCITY + Vec3::new(rng().random_range(-3.0..3.0), 0., 0.);
         commands.entity(entity).remove::<FinishedBall>();
     }
 }
