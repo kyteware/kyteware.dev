@@ -2,22 +2,23 @@ import { useCallback, useEffect, useState } from "react";
 import * as wasm from 'gumballs';
 import type { Gumballs } from "./data";
 import './GumballWrapper.css';
+import { Stage } from "./App";
 
 interface GumballWrapperProps {
     gumballs: Gumballs | null
     dropTrigger: number,
     ejectTrigger: number,
     setLastDropped: (id: number) => void,
-    loadingState: string | null,
-    setLoadingState: (running: string | null) => void,
-    setDoneFilling: (done: boolean) => void
+    setStage: (stage: Stage) => void
 }
 
-export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped, loadingState, setLoadingState, setDoneFilling }: GumballWrapperProps) {
+export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped, setStage }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
+    const [loadingState, setLoadingState] = useState<string | null>("WASM loading");
 
     const doneDroppingCallback = useCallback((id: number) => {
         setLastDropped(id);
+        setStage(Stage.FACT_DISPLAYED)
     }, [setLastDropped]);
 
     const loadingProgress = (progress: string) => {
@@ -26,10 +27,11 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
 
     const doneLoading = () => {
         setLoadingState(null);
+        setStage(Stage.FILLING);
     }
 
     const doneFilling = () => {
-        setDoneFilling(true);
+        setStage(Stage.READY);
     }
 
     // register dropped callback

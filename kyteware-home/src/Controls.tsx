@@ -2,41 +2,25 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { Gumballs } from "./data";
 import './Controls.css';
 import Markdown from "react-markdown";
+import { Stage } from "./App";
 
 interface ControlsProps {
     gumballs: Gumballs | null,
+    stage: Stage,
+    setStage: (stage: Stage) => void
     triggerDrop: React.Dispatch<React.SetStateAction<number>>,
     triggerEject: React.Dispatch<React.SetStateAction<number>>,
     lastDropped: number | null,
-    loadingState: string | null,
-    doneFilling: boolean
 }
 
-enum Stage {
-    LOADING = "LOADING",
-    FILLING = "FILLING",
-    READY = "READY",
-    DROPPING = "DROPPING",
-    FACT_DISPLAYED = "FACT_DISPLAYED",
-    DONE = "DONE"
-}
-
-export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped, loadingState, doneFilling }: ControlsProps) {
-    const [stage, setStage] = useState(Stage.LOADING);
+export default function Controls({ gumballs, stage, setStage, triggerDrop, triggerEject, lastDropped }: ControlsProps) {
     const [numDropped, setNumDropped] = useState(0);
-
-    // must be in here for change detection
-    useEffect(() => {
-        if (lastDropped !== null) {
-            setStage(Stage.FACT_DISPLAYED);
-        }
-    }, [lastDropped]);
 
     switch (stage) {
         case Stage.LOADING:
-            return <LoadingStage setStage={setStage} loadingState={loadingState}/>
+            return <LoadingStage/>
         case Stage.FILLING:
-            return <FillingStage setStage={setStage} doneFilling={doneFilling}/>
+            return <FillingStage/>
         case Stage.READY:
             return <ReadyStage setStage={setStage} triggerDrop={triggerDrop} setNumDropped={setNumDropped}/>
         case Stage.DROPPING:
@@ -70,18 +54,7 @@ function formatMessage(text: string) {
     </div>
 }
 
-interface LoadingStageData {
-    setStage: (s: Stage) => void,
-    loadingState: string | null
-}
-
-function LoadingStage({ setStage, loadingState }: LoadingStageData) {
-    useEffect(() => {
-        if (loadingState === null) {
-            setStage(Stage.FILLING);
-        }
-    }, [loadingState]);
-
+function LoadingStage() {
     return formatControls(
         formatMessage("Loading..."),
         "Drop",
@@ -90,18 +63,7 @@ function LoadingStage({ setStage, loadingState }: LoadingStageData) {
     )
 }
 
-interface FillingStageData {
-    setStage: (s: Stage) => void,
-    doneFilling: boolean
-}
-
-function FillingStage({ setStage, doneFilling }: FillingStageData) {
-    useEffect(() => {
-        if (doneFilling === true) {
-            setStage(Stage.READY);
-        }
-    }, [doneFilling]);
-
+function FillingStage() {
     return formatControls(
         formatMessage("Filling machine..."),
         "Drop",
