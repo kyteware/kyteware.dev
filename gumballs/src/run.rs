@@ -3,8 +3,7 @@ use bevy::prelude::*;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    VisState, dropping_plugin, js_bindings::js_binding_plugin, loader_plugin,
-    machine_lights_plugin, waiting_plugin,
+    dropping_plugin, filling_plugin, js_bindings::js_binding_plugin, loader_plugin, machine_lights_plugin, waiting_plugin, VisState
 };
 
 #[wasm_bindgen]
@@ -22,6 +21,7 @@ pub fn run() {
         // .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(PhysicsPlugins::default())
         .add_plugins(dropping_plugin)
+        .add_plugins(filling_plugin)
         .add_plugins(loader_plugin)
         .add_plugins(waiting_plugin)
         .add_plugins(js_binding_plugin)

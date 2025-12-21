@@ -8,18 +8,20 @@ interface ControlsProps {
     triggerDrop: React.Dispatch<React.SetStateAction<number>>,
     triggerEject: React.Dispatch<React.SetStateAction<number>>,
     lastDropped: number | null,
-    loadingState: string | null
+    loadingState: string | null,
+    doneFilling: boolean
 }
 
 enum Stage {
     LOADING = "LOADING",
+    FILLING = "FILLING",
     READY = "READY",
     DROPPING = "DROPPING",
     FACT_DISPLAYED = "FACT_DISPLAYED",
     DONE = "DONE"
 }
 
-export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped, loadingState }: ControlsProps) {
+export default function Controls({ gumballs, triggerDrop, triggerEject, lastDropped, loadingState, doneFilling }: ControlsProps) {
     const [stage, setStage] = useState(Stage.LOADING);
     const [numDropped, setNumDropped] = useState(0);
 
@@ -33,6 +35,8 @@ export default function Controls({ gumballs, triggerDrop, triggerEject, lastDrop
     switch (stage) {
         case Stage.LOADING:
             return <LoadingStage setStage={setStage} loadingState={loadingState}/>
+        case Stage.FILLING:
+            return <FillingStage setStage={setStage} doneFilling={doneFilling}/>
         case Stage.READY:
             return <ReadyStage setStage={setStage} triggerDrop={triggerDrop} setNumDropped={setNumDropped}/>
         case Stage.DROPPING:
@@ -74,12 +78,32 @@ interface LoadingStageData {
 function LoadingStage({ setStage, loadingState }: LoadingStageData) {
     useEffect(() => {
         if (loadingState === null) {
-            setStage(Stage.READY);
+            setStage(Stage.FILLING);
         }
     }, [loadingState]);
 
     return formatControls(
         formatMessage("Loading..."),
+        "Drop",
+        true,
+        () => {}
+    )
+}
+
+interface FillingStageData {
+    setStage: (s: Stage) => void,
+    doneFilling: boolean
+}
+
+function FillingStage({ setStage, doneFilling }: FillingStageData) {
+    useEffect(() => {
+        if (doneFilling === true) {
+            setStage(Stage.READY);
+        }
+    }, [doneFilling]);
+
+    return formatControls(
+        formatMessage("Filling machine..."),
         "Drop",
         true,
         () => {}

@@ -17,9 +17,9 @@ struct LoadingData {
 }
 
 #[derive(Resource)]
-struct BallAssets {
-    ball_mesh: Handle<Mesh>,
-    ball_materials: HashMap<BallCategory, Handle<StandardMaterial>>,
+pub struct BallAssets {
+    pub ball_mesh: Handle<Mesh>,
+    pub ball_materials: HashMap<BallCategory, Handle<StandardMaterial>>,
 }
 
 pub fn loader_plugin(app: &mut App) {
@@ -50,7 +50,6 @@ pub fn loader_plugin(app: &mut App) {
     app.add_systems(
         OnExit(VisState::Loading),
         (
-            add_ball_physics,
             add_machine_physics,
             js_bindings::done_loading,
         ),
@@ -165,17 +164,10 @@ fn setup_ball_assets(
 fn on_gumball_info_available(
     available: On<js_bindings::GumballsAvailable>,
     mut commands: Commands,
-    mut loading_data: ResMut<LoadingData>,
-    ball_assets: Res<BallAssets>,
+    mut loading_data: ResMut<LoadingData>
 ) {
-    for (i, ball) in available.0.iter().enumerate() {
-        commands.spawn((
-            ball.clone(),
-            AvailableBall,
-            Mesh3d(ball_assets.ball_mesh.clone()),
-            MeshMaterial3d(ball_assets.ball_materials[&ball.category].clone()),
-            Transform::from_translation(Vec3::new(0.5, 3. + (0.5 * i as f32), 0.)),
-        ));
+    for ball in available.0.iter() {
+        commands.spawn(ball.clone());
     }
 
     loading_data.facts_loaded = true;
@@ -197,7 +189,7 @@ fn start_if_done(
     }
 
     // all assets loaded!
-    *next_state = NextState::Pending(VisState::Waiting);
+    *next_state = NextState::Pending(VisState::Filling);
 }
 
 fn add_machine_physics(
@@ -219,16 +211,6 @@ fn add_machine_physics(
                 CollisionMargin(0.02),
             ));
         }
-    }
-}
-
-fn add_ball_physics(mut commands: Commands, query: Query<Entity, With<AvailableBall>>) {
-    for entity in &query {
-        commands.entity(entity).insert((
-            RigidBody::Dynamic,
-            Collider::sphere(BALL_RAD),
-            Friction::new(0.05),
-        ));
     }
 }
 

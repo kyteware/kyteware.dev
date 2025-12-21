@@ -4,21 +4,24 @@ mod loader;
 mod machine_lights;
 mod run;
 mod waiting;
+mod filling;
 
 use std::sync::LazyLock;
 
 use bevy::prelude::*;
+use serde::Deserialize;
 
 pub use dropping::*;
 pub use loader::*;
 pub use machine_lights::*;
 pub use run::run;
-use serde::Deserialize;
 pub use waiting::*;
+pub use filling::*;
 
 pub const BALL_RAD: f32 = 0.29;
 pub const FAKE_GRAVITY: f32 = -9.81 / 20.;
 pub const FLOOR_Y_BOTTOM: f32 = 2.0;
+pub const BALL_STARTING_COORDS: Vec3 = Vec3::new(0., 5.45, 0.);
 pub const HIDDEN_BALL_CHAMBER_COORDS: Vec3 = Vec3::new(0.573791, 1.4756, 0.47438);
 pub const FINAL_BALL_LANDING_COORDS: Vec3 = Vec3::new(0.58, 1.4, 1.27);
 pub const GUMBALL_EJECT_VELOCITY: Vec3 = Vec3::new(0., 4., 1.);
@@ -47,6 +50,7 @@ pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| {
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum VisState {
     Loading,
+    Filling,
     Waiting,
     Dropping,
 }

@@ -9,10 +9,11 @@ interface GumballWrapperProps {
     ejectTrigger: number,
     setLastDropped: (id: number) => void,
     loadingState: string | null,
-    setLoadingState: (running: string | null) => void
+    setLoadingState: (running: string | null) => void,
+    setDoneFilling: (done: boolean) => void
 }
 
-export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped, loadingState, setLoadingState }: GumballWrapperProps) {
+export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, setLastDropped, loadingState, setLoadingState, setDoneFilling }: GumballWrapperProps) {
     const [isWasmLoaded, setIsWasmLoaded] = useState(false);
 
     const doneDroppingCallback = useCallback((id: number) => {
@@ -27,16 +28,22 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
         setLoadingState(null);
     }
 
+    const doneFilling = () => {
+        setDoneFilling(true);
+    }
+
     // register dropped callback
     useEffect(() => {
         (window as any).doneDropping = doneDroppingCallback;
         (window as any).loadingProgress = loadingProgress;
         (window as any).doneLoading = doneLoading;
+        (window as any).doneFilling = doneFilling;
 
         return () => {
             (window as any).doneDropping = undefined;
             (window as any).loadingProgress = undefined;
             (window as any).doneLoading = undefined;
+            (window as any).doneFilling = undefined;
         }
     }, [doneDroppingCallback]);
 

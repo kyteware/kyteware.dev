@@ -4,7 +4,7 @@
 - [x] Cleanup controls code
 - [x] Only let user control after loading
 - [x] Check if we finished all balls
-- [ ] Make balls drop properly
+- [x] Make balls drop properly
 - [ ] Prioritize certain balls
 - [ ] Make writups for all balls
 - [ ] Make model better

@@ -20,6 +20,9 @@ extern "C" {
     /// signal loading finished
     #[wasm_bindgen(js_name = doneLoading)]
     pub fn done_loading();
+    /// signals gumball filling finished
+    #[wasm_bindgen(js_name = doneFilling)]
+    pub fn done_filling();
     /// relays information about which ball fell
     #[wasm_bindgen(js_name = doneDropping)]
     pub fn done_dropping(id: u32);
