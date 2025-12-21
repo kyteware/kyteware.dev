@@ -3,7 +3,7 @@ import './Headerbar.css'
 
 export default function Headerbar() {
     return <div id="headerbar">
-        <p>Ryan Warfield</p>
+        <h2>Ryan Warfield</h2>
         <Icons/>
     </div>
 }
