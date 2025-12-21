@@ -1,4 +1,4 @@
-- [ ] Fonts (including making descriptions look good)
+- [x] Fonts (including making descriptions look good)
 - [ ] Make headerbar not ridiculous
 - [x] Make controls look good
 - [x] Cleanup controls code
