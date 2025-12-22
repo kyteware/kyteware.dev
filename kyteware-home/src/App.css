@@ -4,10 +4,32 @@
 
 #siteLayout {
   display: grid;
-  grid-template-columns: 35% 65%;
-  grid-template-rows: 50px 1fr;
+  /* grid-template-columns: 35% 65%;
+  grid-template-rows: 50px 1fr; */
+
   width: 100vw;
   height: 100vh;
+}
+
+@media (orientation: landscape) {
+  #siteLayout {
+    grid-template-areas:
+      "header header"
+      "controls gumballs";
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 2fr 3fr;
+  }
+}
+
+@media (orientation: portrait) {
+  #siteLayout {
+    grid-template-areas:
+      "header"
+      "gumballs"
+      "controls";
+    grid-template-rows: auto 3fr 2fr;
+    grid-template-columns: 1fr;
+  }
 }
 
 /* #siteLayout div {
@@ -15,17 +37,8 @@
   height: 100%
 } */
 
-#siteLayout #headerbar {
-  grid-column: 1 / span 2;
-  grid-row: 1;
-}
+#siteLayout #headerbar { grid-area: header; }
 
-#siteLayout #controls {
-  grid-column: 1;
-  grid-row: 2;
-}
+#siteLayout #controls { grid-area: controls; }
 
-#siteLayout #gumball-container {
-  grid-column: 2;
-  grid-row: 2;
-}
+#siteLayout #gumball-container { grid-area: gumballs; }
