@@ -38,7 +38,5 @@
 } */
 
 #siteLayout #headerbar { grid-area: header; }
-
 #siteLayout #controls { grid-area: controls; }
-
 #siteLayout #gumball-container { grid-area: gumballs; }
