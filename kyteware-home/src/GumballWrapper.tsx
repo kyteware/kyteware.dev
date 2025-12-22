@@ -68,7 +68,7 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
         if (isWasmLoaded) {
             wasm.gumballs_available(gumballs.gumballs);
         }
-    }, [isWasmLoaded, gumballs]);
+    }, [isWasmLoaded]);
 
     // drop on trigger
     useEffect(() => {
