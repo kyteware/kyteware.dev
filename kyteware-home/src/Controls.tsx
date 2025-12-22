@@ -111,7 +111,18 @@ interface FactDisplayedStageData {
 function FactDisplayedStage({ setStage, gumballs, lastDropped, triggerEject, numDropped }: FactDisplayedStageData) {
     const toDisplay = gumballs!.find(lastDropped!);
     return formatControls(
-        <Markdown>{toDisplay.content}</Markdown>,
+        <Markdown
+        components={{
+            a({ node, target, rel, ...rest }) {
+                return <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    {...rest}
+                />
+            }
+        }}
+            >{toDisplay.content}
+        </Markdown>,
         "Discard",
         false,
         () => {
