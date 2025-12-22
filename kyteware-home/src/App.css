@@ -16,7 +16,7 @@
     grid-template-areas:
       "header header"
       "controls gumballs";
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 50px 1fr;
     grid-template-columns: 2fr 3fr;
   }
 }
@@ -27,7 +27,7 @@
       "header"
       "gumballs"
       "controls";
-    grid-template-rows: auto 3fr 2fr;
+    grid-template-rows: 50px 3fr 2fr;
     grid-template-columns: 1fr;
   }
 }
