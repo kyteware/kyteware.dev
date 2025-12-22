@@ -1,5 +1,4 @@
 - [x] Fonts (including making descriptions look good)
-- [ ] Make headerbar not ridiculous
 - [x] Make controls look good
 - [x] Cleanup controls code
 - [x] Only let user control after loading
@@ -9,4 +8,4 @@
 - [ ] Make writups for all balls
 - [ ] Make model better
 - [x] Make ball drops look good
-- [ ] Add formatting for mobile
+- [x] Add formatting for mobile
