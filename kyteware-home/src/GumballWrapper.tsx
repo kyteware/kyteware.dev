@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import * as wasm from 'gumballs';
-import type { Gumballs } from "./data";
+import { Stage, type Gumballs } from "./common";
 import './GumballWrapper.css';
-import { Stage } from "./App";
 
 interface GumballWrapperProps {
-    gumballs: Gumballs | null
+    gumballs: Gumballs
     dropTrigger: number,
     ejectTrigger: number,
     setLastDropped: (id: number) => void,
@@ -19,23 +18,24 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
     const doneDroppingCallback = useCallback((id: number) => {
         setLastDropped(id);
         setStage(Stage.FACT_DISPLAYED)
-    }, [setLastDropped]);
+    }, [setStage, setLastDropped]);
 
-    const loadingProgress = (progress: string) => {
+    const loadingProgress = useCallback((progress: string) => {
         setLoadingState(progress);
-    }
+    }, [setLoadingState]);
 
-    const doneLoading = () => {
+    const doneLoading = useCallback(() => {
         setLoadingState(null);
         setStage(Stage.FILLING);
-    }
+    }, [setLoadingState, setStage]);
 
-    const doneFilling = () => {
+    const doneFilling = useCallback(() => {
         setStage(Stage.READY);
-    }
+    }, [setStage]);
 
     // register dropped callback
     useEffect(() => {
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         (window as any).doneDropping = doneDroppingCallback;
         (window as any).loadingProgress = loadingProgress;
         (window as any).doneLoading = doneLoading;
@@ -47,7 +47,8 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
             (window as any).doneLoading = undefined;
             (window as any).doneFilling = undefined;
         }
-    }, [doneDroppingCallback]);
+        /* eslint-enable @typescript-eslint/no-explicit-any */
+    }, [doneDroppingCallback, loadingProgress, doneLoading, doneFilling]);
 
     // init wasm
     useEffect(() => {
@@ -64,10 +65,10 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
 
     // send gumballs when ready
     useEffect(() => {
-        if (isWasmLoaded && gumballs !== null) {
+        if (isWasmLoaded) {
             wasm.gumballs_available(gumballs.gumballs);
         }
-    }, [isWasmLoaded]);
+    }, [isWasmLoaded, gumballs]);
 
     // drop on trigger
     useEffect(() => {

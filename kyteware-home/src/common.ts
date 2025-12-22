@@ -1,5 +1,14 @@
 const md_files: Record<string, { default: string }> = import.meta.glob("../../facts/*.md", { query: "?raw", eager: true });
 
+export enum Stage {
+    LOADING = "LOADING",
+    FILLING = "FILLING",
+    READY = "READY",
+    DROPPING = "DROPPING",
+    FACT_DISPLAYED = "FACT_DISPLAYED",
+    DONE = "DONE"
+}
+
 enum GumballCategory {
     PersonalProject = "PersonalProject",
     Experience = "Experience",

@@ -2,17 +2,8 @@ import { useState } from 'react';
 import './App.css'
 import Controls from './Controls'
 import GumballWrapper from './GumballWrapper'
-import { Gumballs } from './data';
+import { Gumballs, Stage } from './common';
 import Headerbar from './Headerbar';
-
-export enum Stage {
-    LOADING = "LOADING",
-    FILLING = "FILLING",
-    READY = "READY",
-    DROPPING = "DROPPING",
-    FACT_DISPLAYED = "FACT_DISPLAYED",
-    DONE = "DONE"
-}
 
 export default function App() {
     const [dropTrigger, triggerDrop] = useState(0);

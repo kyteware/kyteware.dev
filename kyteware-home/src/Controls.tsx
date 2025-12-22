@@ -1,8 +1,7 @@
-import { useEffect, useState, type ReactNode } from "react";
-import type { Gumballs } from "./data";
+import { useState, type ReactNode } from "react";
+import { Stage, type Gumballs } from "./common";
 import './Controls.css';
 import Markdown from "react-markdown";
-import { Stage } from "./App";
 
 interface ControlsProps {
     gumballs: Gumballs | null,
