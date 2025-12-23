@@ -4,7 +4,7 @@ use avian3d::prelude::*;
 use bevy::{prelude::*, time::common_conditions::on_timer};
 
 use crate::{
-    AMBIENT_BRIGHTNESS, AMBIENT_COLOR, AvailableBall, BACKGROUND_COLOR, BALL_RAD, BallCategory,
+    AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BallCategory,
     CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS,
     MACHINE_LIGHT_RANGE, MachineLight, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY,
     SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS, VisState, js_bindings,
