@@ -4,8 +4,7 @@
 - [x] Only let user control after loading
 - [x] Check if we finished all balls
 - [x] Make balls drop properly
-- [ ] Prioritize certain balls
-- [ ] Make writups for all balls
-- [ ] Make model better
+- [x] Make writups for all balls
 - [x] Make ball drops look good
 - [x] Add formatting for mobile
+- [ ] Make it more immersive
