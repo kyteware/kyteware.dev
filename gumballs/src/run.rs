@@ -10,14 +10,19 @@ use crate::{
 #[wasm_bindgen]
 pub fn run() {
     App::new()
-        .add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(Window {
-                canvas: Some("#gumball-canvas".into()),
-                fit_canvas_to_parent: true,
+        .add_plugins(DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Some(Window {
+                    canvas: Some("#gumball-canvas".into()),
+                    fit_canvas_to_parent: true,
+                    ..default()
+                }),
+                ..default() 
+            }).set(AssetPlugin {
+                meta_check: bevy::asset::AssetMetaCheck::Never,
                 ..default()
-            }),
-            ..default()
-        }))
+            })
+        )
         // .add_plugins(EguiPlugin::default())
         // .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(PhysicsPlugins::default())
