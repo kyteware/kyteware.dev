@@ -29,10 +29,10 @@ pub const GUMBALL_EJECT_VELOCITY: Vec3 = Vec3::new(0., 4., 1.);
 pub const BACKGROUND_COLOR: Color = Color::srgb_u8(36, 27, 60);
 pub const FLOOR_COLOR: Color = Color::srgb_u8(200, 200, 200);
 
-pub const SPOTLIGHT_POS: Vec3 = Vec3::new(1.5, 15., 1.5);
+pub const SPOTLIGHT_POS: Vec3 = Vec3::new(2.5, 15., 2.5);
 pub const SPOTLIGHT_INNER_ANGLE: f32 = f32::to_radians(10.);
 pub const SPOTLIGHT_OUTER_ANGLE: f32 = f32::to_radians(18.);
-pub const SPOTLIGHT_INTENSITY: f32 = 1_200_000.;
+pub const SPOTLIGHT_INTENSITY: f32 = 1_600_000.;
 
 pub const MACHINE_LIGHT_POSITIONS: [Vec3; 2] = [Vec3::new(0.7, 5.5, 0.), Vec3::new(-0.7, 5.5, 0.)];
 pub const MACHINE_LIGHT_INTENSITY: f32 = 100_000.;
@@ -46,7 +46,7 @@ pub const AMBIENT_COLOR: Color = Color::srgb_u8(36, 27, 60);
 pub const CAM_POS: Vec3 = Vec3::new(20.7, 8.5, 9.4);
 pub const CAM_LOOKING_AT: Vec3 = Vec3::new(0., 1.5, 0.);
 pub const CAM_ROT_RAD: f32 = 0.7;
-pub const CAM_ROT_PERIOD: f32 = 4.;
+pub const CAM_ROT_PERIOD: f32 = 7.;
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum VisState {
