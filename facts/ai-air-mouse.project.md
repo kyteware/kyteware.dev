@@ -7,7 +7,7 @@ Machine learning project to track hand motions and translate it to mouse movemen
 I worked on this project as my capstone leaving high school.
 This was originally intented to be a hardware project using a bunch of IMUs attached to a hand, but my parts were faulty and I had to change course.
 
-I had some fantastic afternoons in the maker club experimenting 
+I had some fantastic afternoons in the maker club experimenting with this project, everyone was super supportive even though I wasn't 3D printing anything :/
 
 [video](https://github.com/user-attachments/assets/a35d6bf7-c1aa-4ada-b963-75f7ccddd48d)
 
