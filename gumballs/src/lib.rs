@@ -5,8 +5,7 @@ mod machine_lights;
 mod run;
 mod waiting;
 mod filling;
-
-use std::sync::LazyLock;
+mod animations;
 
 use bevy::prelude::*;
 use serde::Deserialize;
@@ -17,6 +16,7 @@ pub use machine_lights::*;
 pub use run::run;
 pub use waiting::*;
 pub use filling::*;
+pub use animations::*;
 
 pub const BALL_RAD: f32 = 0.29;
 pub const FAKE_GRAVITY: f32 = -9.81 / 20.;
@@ -43,9 +43,10 @@ pub const MACHINE_LIGHT_RANGE: f32 = 5.;
 pub const AMBIENT_BRIGHTNESS: f32 = 100.;
 pub const AMBIENT_COLOR: Color = Color::srgb_u8(36, 27, 60);
 
-pub static CAM_TRANSFORM: LazyLock<Transform> = LazyLock::new(|| {
-    Transform::from_xyz(20.7, 8.5, 9.4).looking_at(Vec3::new(0., 1.5, 0.), Vec3::Y)
-});
+pub const CAM_POS: Vec3 = Vec3::new(20.7, 8.5, 9.4);
+pub const CAM_LOOKING_AT: Vec3 = Vec3::new(0., 1.5, 0.);
+pub const CAM_ROT_RAD: f32 = 0.7;
+pub const CAM_ROT_PERIOD: f32 = 4.;
 
 #[derive(States, Debug, Hash, PartialEq, Eq, Clone)]
 pub enum VisState {

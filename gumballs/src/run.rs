@@ -1,9 +1,10 @@
 use avian3d::PhysicsPlugins;
 use bevy::prelude::*;
+use bevy_framepace::FramepacePlugin;
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    dropping_plugin, filling_plugin, js_bindings::js_binding_plugin, loader_plugin, machine_lights_plugin, waiting_plugin, VisState
+    animation_plugins, dropping_plugin, filling_plugin, js_bindings::js_binding_plugin, loader_plugin, machine_lights_plugin, waiting_plugin, VisState
 };
 
 #[wasm_bindgen]
@@ -20,12 +21,14 @@ pub fn run() {
         // .add_plugins(EguiPlugin::default())
         // .add_plugins(WorldInspectorPlugin::new())
         .add_plugins(PhysicsPlugins::default())
+        .add_plugins(FramepacePlugin)
         .add_plugins(dropping_plugin)
         .add_plugins(filling_plugin)
         .add_plugins(loader_plugin)
         .add_plugins(waiting_plugin)
         .add_plugins(js_binding_plugin)
         .add_plugins(machine_lights_plugin)
+        .add_plugins(animation_plugins)
         .insert_state(VisState::Loading)
         .run();
 }

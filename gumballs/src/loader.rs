@@ -2,12 +2,10 @@ use std::{collections::HashMap, time::Duration};
 
 use avian3d::prelude::*;
 use bevy::{prelude::*, time::common_conditions::on_timer};
+use bevy_framepace::{FramepaceSettings, Limiter};
 
 use crate::{
-    AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, BallCategory,
-    CAM_TRANSFORM, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS,
-    MACHINE_LIGHT_RANGE, MachineLight, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY,
-    SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS, VisState, js_bindings,
+    js_bindings, BallCategory, MachineLight, VisState, Wiggler, AMBIENT_BRIGHTNESS, AMBIENT_COLOR, BACKGROUND_COLOR, CAM_LOOKING_AT, CAM_POS, CAM_ROT_PERIOD, CAM_ROT_RAD, FLOOR_COLOR, MACHINE_LIGHT_INTENSITY, MACHINE_LIGHT_POSITIONS, MACHINE_LIGHT_RANGE, SPOTLIGHT_INNER_ANGLE, SPOTLIGHT_INTENSITY, SPOTLIGHT_OUTER_ANGLE, SPOTLIGHT_POS
 };
 
 #[derive(Resource)]
@@ -31,6 +29,7 @@ pub fn loader_plugin(app: &mut App) {
         Startup,
         (
             setup_camera,
+            setup_framerate,
             setup_spotlight,
             setup_scene,
             setup_ball_assets,
@@ -70,8 +69,13 @@ fn setup_camera(mut commands: Commands) {
             fov: 30.0_f32.to_radians(),
             ..default()
         }),
-        *CAM_TRANSFORM,
+        Transform::default(),
+        Wiggler::new(CAM_POS, CAM_LOOKING_AT, CAM_ROT_RAD, CAM_ROT_PERIOD)
     ));
+}
+
+fn setup_framerate(mut settings: ResMut<FramepaceSettings>) {
+    settings.limiter = Limiter::from_framerate(30.);
 }
 
 fn setup_spotlight(mut commands: Commands) {
