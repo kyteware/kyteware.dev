@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import * as wasm from 'gumballs';
+import init, * as wasm from 'gumballs';
+import wasmUrl from 'gumballs/gumballs_bg.wasm?url';
 import { Stage, type Gumballs } from "./common";
 import './GumballWrapper.css';
 
@@ -52,7 +53,23 @@ export default function GumballWrapper({ gumballs, dropTrigger, ejectTrigger, se
 
     // init wasm
     useEffect(() => {
-        wasm.default()
+        const initWasm = async () => {
+            let wasmSource;
+
+            if (import.meta.env.PROD) {
+                const response = await fetch(`${wasmUrl}.gz`)!;
+                const ds = new DecompressionStream("gzip");
+                const decompressedStream = response.body!.pipeThrough(ds);
+
+                wasmSource = new Response(decompressedStream, { headers: { 'Content-Type': 'application/wasm' } });
+            } else {
+                wasmSource = wasmUrl;
+            }
+
+            await init(wasmSource);
+        };
+
+        initWasm()
             .then(() => {
                 console.log("gumballs module initialized");
                 wasm.run();
