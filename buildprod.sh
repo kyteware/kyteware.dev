@@ -2,7 +2,7 @@ rm -rf build/*;
 mkdir -p build;
 
 cd gumballs;
-./build-for-debug.sh
+./build-for-prod.sh
 cd ..;
 
 cd kyteware-home;
