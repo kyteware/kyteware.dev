@@ -59,3 +59,16 @@
   align-items: center;
 }
 
+.controlsInner::-webkit-scrollbar {
+  width: 6px;
+}
+
+.controlsInner::-webkit-scrollbar-track {
+  background: var(--color-fg);
+}
+
+.controlsInner::-webkit-scrollbar-thumb {
+  /* background: var(--color-text-darkest); */
+  border-radius: 10px;
+  border: var(--standard-border-width) solid var(--color-secondary);
+}
