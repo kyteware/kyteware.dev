@@ -12,6 +12,7 @@
 
   --color-text: #d0d0d1;
   --color-text-darker: #b0b0b2;
+  --color-text-darkest: #777777;
   
   --color-primary: #2c1584;
   --color-primary-light: #8b75e4;
@@ -99,6 +100,7 @@ button {
   background-color: var(--color-primary-dark);
   cursor: pointer;
   transition: border-color 0.25s;
+  color: var(--color-text)
 }
 button:hover {
   border-color: var(--color-primary-light);
@@ -108,7 +110,11 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.buttonDisabled {
+  color: var(--color-text-darker)
+}
+
 .buttonDisabled:hover {
   border-color: var(--color-secondary);
-  color: var(--color-text-darker);
+  color: var(--color-text-darkest);
 }
